@@ -183,30 +183,29 @@ html,body { min-height:100vh; background:var(--bg); color:var(--text); font-fami
 .skill-pills.visible .pill:nth-child(even) { transition-delay: 0.12s; }
 
 /* 6. Databricks-style accordion section expand (margin-top + opacity like their syllabus) */
-.info-grid .info-card {
+.info-card {
   opacity: 0;
   transform: translateY(16px);
-  transition: opacity 0.2s linear, margin-top 0.2s ease-in, transform 0.25s cubic-bezier(0.22,1,0.36,1) !important;
+  transition: opacity 0.2s linear, transform 0.25s cubic-bezier(0.22,1,0.36,1) !important;
 }
-.cta-card.visible .info-card { opacity: 1; transform: translateY(0); }
-.cta-card.visible .info-card:nth-child(1) { transition-delay: 0.05s; }
-.cta-card.visible .info-card:nth-child(2) { transition-delay: 0.12s; }
-.cta-card.visible .info-card:nth-child(3) { transition-delay: 0.19s; }
-.cta-card.visible .info-card:nth-child(4) { transition-delay: 0.26s; }
+.info-card.visible { opacity: 1; transform: translateY(0); }
+.info-card.visible:nth-child(1) { transition-delay: 0.05s; }
+.info-card.visible:nth-child(2) { transition-delay: 0.12s; }
+.info-card.visible:nth-child(3) { transition-delay: 0.19s; }
+.info-card.visible:nth-child(4) { transition-delay: 0.26s; }
 
 /* 7. Countdown cards — Databricks-style width/height animated reveal */
 .countdown-row { overflow: hidden; }
 .cd-item {
   opacity: 0;
-  transform: scale(0.85);
-  transition: opacity 0.2s linear, transform 0.2s ease-out,
-              width 0.2s linear, height 0.2s linear !important;
+  transform: scale(0.88);
+  transition: opacity 0.2s linear, transform 0.25s ease-out !important;
 }
-.cta-card.visible .cd-item { opacity: 1; transform: scale(1); }
-.cta-card.visible .cd-item:nth-child(1) { transition-delay: 0.00s; }
-.cta-card.visible .cd-item:nth-child(2) { transition-delay: 0.08s; }
-.cta-card.visible .cd-item:nth-child(3) { transition-delay: 0.16s; }
-.cta-card.visible .cd-item:nth-child(4) { transition-delay: 0.24s; }
+.cd-item.visible { opacity: 1; transform: scale(1); }
+.cd-item.visible:nth-child(1) { transition-delay: 0.00s; }
+.cd-item.visible:nth-child(2) { transition-delay: 0.08s; }
+.cd-item.visible:nth-child(3) { transition-delay: 0.16s; }
+.cd-item.visible:nth-child(4) { transition-delay: 0.24s; }
 
 /* 8. Ticker fade-in from bottom */
 .ai-ticker {
@@ -219,9 +218,9 @@ html,body { min-height:100vh; background:var(--bg); color:var(--text); font-fami
 /* 9. Privacy banner — delayed fade like Databricks course details */
 .privacy-banner {
   opacity: 0;
-  transition: opacity 0.2s linear 0.2s !important;
+  transition: opacity 0.3s linear 0.15s !important;
 }
-.cta-card.visible .privacy-banner { opacity: 1; }
+.privacy-banner.visible { opacity: 1; }
 
 /* 10. REGISTER NOW button — Databricks enroll button scale on hover */
 .cta-btn:hover { transform: translateY(-2px) scale(1.01) !important; }
@@ -674,16 +673,31 @@ function cd() {
 cd(); setInterval(cd, 1000);
 
 
-// ── SCROLL REVEAL OBSERVER ──
+// ── SCROLL REVEAL OBSERVER (Databricks-style) ──
+function revealEl(el) {
+  el.classList.add('visible');
+}
+
 const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
+      // Small rAF delay so browser paints the opacity:0 state first
+      requestAnimationFrame(() => requestAnimationFrame(() => revealEl(entry.target)));
       revealObserver.unobserve(entry.target);
     }
   });
-}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+}, { threshold: 0, rootMargin: '0px 0px 0px 0px' });
+
+// Observe all reveal elements + individual animated children
+const allReveal = [
+  ...document.querySelectorAll('.reveal'),
+  ...document.querySelectorAll('.cd-item'),
+  ...document.querySelectorAll('.info-card'),
+  ...document.querySelectorAll('.privacy-banner')
+];
+// Re-enable rAF for observer use
+const _raf = window._origRAF || window.requestAnimationFrame;
+allReveal.forEach(el => revealObserver.observe(el));
 
 
 // ═══ DATABRICKS SCROLL BEHAVIOURS ═══
