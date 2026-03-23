@@ -630,6 +630,49 @@ html, body {
   .cloud-badges { gap: 8px; }
   .cloud-badge { font-size: 10px; padding: 6px 12px; }
 }
+
+/* ── COMPANY TAGLINE ── */
+.tagline {
+  display: block;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: clamp(15px, 2.2vw, 22px);
+  font-weight: 500;
+  letter-spacing: 3px;
+  font-style: italic;
+  margin-top: 10px;
+  background: linear-gradient(90deg, #ffd740, #ffab40, #ffd740);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: taglineShimmer 4s linear infinite;
+  text-shadow: none;
+  position: relative;
+}
+
+@keyframes taglineShimmer {
+  0%   { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+.tagline-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.tagline-line {
+  flex: 1;
+  max-width: 80px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,215,64,0.5));
+}
+
+.tagline-line.right {
+  background: linear-gradient(90deg, rgba(255,215,64,0.5), transparent);
+}
 </style>
 </head>
 <body>
@@ -665,6 +708,11 @@ html, body {
       <span class="title-glow">HitaVirTech</span>
     </div>
     <div class="title-batch">BATCH 05 &middot; 2026</div>
+    <div class="tagline-wrap">
+      <div class="tagline-line"></div>
+      <div class="tagline">Wisdom to Lead, Intelligence to Serve</div>
+      <div class="tagline-line right"></div>
+    </div>
     <div class="course-tag">&#9658; DATA ENGINEERING AND ANALYTICS WITH AGENTIC AI</div>
     <div class="launch-row">
       <div class="launch-item">&#128467; Starts <span class="val">April 5, 2026</span></div>
