@@ -673,31 +673,43 @@ function cd() {
 cd(); setInterval(cd, 1000);
 
 
-// ── SCROLL REVEAL OBSERVER (Databricks-style) ──
-function revealEl(el) {
-  el.classList.add('visible');
-}
+// ── SCROLL REVEAL OBSERVER (Databricks-style, setTimeout-based) ──
+(function initReveal() {
+  const allReveal = [
+    ...document.querySelectorAll('.reveal'),
+    ...document.querySelectorAll('.cd-item'),
+    ...document.querySelectorAll('.info-card'),
+    ...document.querySelectorAll('.privacy-banner')
+  ];
 
-const revealObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      // Small rAF delay so browser paints the opacity:0 state first
-      requestAnimationFrame(() => requestAnimationFrame(() => revealEl(entry.target)));
-      revealObserver.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0, rootMargin: '0px 0px 0px 0px' });
+  function revealEl(el, delay) {
+    setTimeout(() => el.classList.add('visible'), delay || 0);
+  }
 
-// Observe all reveal elements + individual animated children
-const allReveal = [
-  ...document.querySelectorAll('.reveal'),
-  ...document.querySelectorAll('.cd-item'),
-  ...document.querySelectorAll('.info-card'),
-  ...document.querySelectorAll('.privacy-banner')
-];
-// Re-enable rAF for observer use
-const _raf = window._origRAF || window.requestAnimationFrame;
-allReveal.forEach(el => revealObserver.observe(el));
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        revealEl(entry.target, 50);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0, rootMargin: '0px' });
+
+  // Stagger: elements already in viewport trigger on DOMContentLoaded
+  // Elements out of viewport trigger when scrolled into view
+  setTimeout(() => {
+    allReveal.forEach((el, i) => {
+      const rect = el.getBoundingClientRect();
+      const inView = rect.top < window.innerHeight && rect.bottom > 0;
+      if (inView) {
+        // Already visible — stagger them with small delays
+        revealEl(el, 80 + i * 40);
+      } else {
+        observer.observe(el);
+      }
+    });
+  }, 100);
+})();
 
 
 // ═══ DATABRICKS SCROLL BEHAVIOURS ═══
