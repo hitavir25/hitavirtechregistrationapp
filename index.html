@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#020b18">
+<meta name="description" content="Register for HitaVirTech Batch 5 — Data Engineering and Analytics with Agentic AI. Online training via Zoom. Starts April 5, 2026. Bengaluru, India.">
+<meta name="keywords" content="HitaVirTech, Data Engineering, Analytics, Agentic AI, Databricks, AWS, Azure, PySpark, Online Training, Bengaluru">
+<meta property="og:title" content="HitaVirTech Batch 5 — Candidate Registration">
+<meta property="og:description" content="Data Engineering and Analytics with Agentic AI. Online via Zoom. Starts April 5, 2026.">
+<meta property="og:url" content="https://hitavir25.github.io/hitavirtechregistrationapp/">
+<meta name="robots" content="index, follow">
 <title>HitaVirTech · Batch 5 · Registration</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -193,18 +200,20 @@ html,body { min-height:100vh; background:var(--bg); color:var(--text); font-fami
 const canvas=document.getElementById('bg-canvas'),ctx=canvas.getContext('2d');let W,H;
 function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
 window.addEventListener('resize',resize);resize();
-const stars=Array.from({length:280},()=>({x:Math.random()*2000,y:Math.random()*2000,r:Math.random()*1.8+0.2,alpha:Math.random()*0.7+0.2,twinkle:Math.random()*Math.PI*2,speed:Math.random()*0.02+0.005}));
-const streams=Array.from({length:80},()=>rS({}));
+const stars=Array.from({length:200},()=>({x:Math.random()*2000,y:Math.random()*2000,r:Math.random()*1.8+0.2,alpha:Math.random()*0.7+0.2,twinkle:Math.random()*Math.PI*2,speed:Math.random()*0.02+0.005}));
+const streams=Array.from({length:50},()=>rS({}));
 function rS(p){p.x=Math.random()*2000;p.y=Math.random()*2000;p.vx=(Math.random()-0.5)*0.6;p.vy=(Math.random()-0.5)*0.6;p.r=Math.random()*2+0.5;const c=['#00e5ff','#00bfa5','#0078d4','#4285f4','#ff9900','#7c4dff','#00e676','#ea80fc'];p.color=c[Math.floor(Math.random()*c.length)];p.alpha=Math.random()*0.6+0.15;p.life=0;p.maxLife=Math.random()*400+200;p.trail=[];return p;}
 const neb=[{x:0.15,y:0.2,r:250,color:'#0078d4',a:0.06},{x:0.85,y:0.3,r:200,color:'#ff9900',a:0.06},{x:0.5,y:0.7,r:280,color:'#7c4dff',a:0.07},{x:0.1,y:0.8,r:180,color:'#00e5ff',a:0.05},{x:0.9,y:0.8,r:220,color:'#4285f4',a:0.06}];
-const nds=Array.from({length:18},()=>({x:Math.random(),y:Math.random(),vx:(Math.random()-0.5)*0.0003,vy:(Math.random()-0.5)*0.0003,r:Math.random()*4+2,color:['#00e5ff','#0078d4','#ff9900','#7c4dff','#4285f4'][Math.floor(Math.random()*5)],pulse:Math.random()*Math.PI*2}));
-function draw(){ctx.clearRect(0,0,W,H);const g=ctx.createRadialGradient(W*.5,H*.4,0,W*.5,H*.4,Math.max(W,H)*.8);g.addColorStop(0,'#020f2a');g.addColorStop(.4,'#020b18');g.addColorStop(1,'#010810');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+const nds=Array.from({length:14},()=>({x:Math.random(),y:Math.random(),vx:(Math.random()-0.5)*0.0003,vy:(Math.random()-0.5)*0.0003,r:Math.random()*4+2,color:['#00e5ff','#0078d4','#ff9900','#7c4dff','#4285f4'][Math.floor(Math.random()*5)],pulse:Math.random()*Math.PI*2}));
+let _lastFrame=0,_paused=false;
+document.addEventListener('visibilitychange',()=>{_paused=document.hidden;});
+function draw(ts){ctx.clearRect(0,0,W,H);const g=ctx.createRadialGradient(W*.5,H*.4,0,W*.5,H*.4,Math.max(W,H)*.8);g.addColorStop(0,'#020f2a');g.addColorStop(.4,'#020b18');g.addColorStop(1,'#010810');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
 neb.forEach(n=>{const ng=ctx.createRadialGradient(n.x*W,n.y*H,0,n.x*W,n.y*H,n.r);ng.addColorStop(0,n.color+Math.round(n.a*255).toString(16).padStart(2,'0'));ng.addColorStop(1,'transparent');ctx.fillStyle=ng;ctx.fillRect(0,0,W,H);});
 stars.forEach(s=>{s.twinkle+=s.speed;const a=s.alpha*(0.6+0.4*Math.sin(s.twinkle));ctx.save();ctx.globalAlpha=a;ctx.fillStyle='#fff';ctx.shadowColor='#a0d8ef';ctx.shadowBlur=s.r>1.2?6:2;ctx.beginPath();ctx.arc(s.x%W,s.y%H,s.r,0,Math.PI*2);ctx.fill();ctx.restore();});
 for(let i=0;i<nds.length;i++){nds[i].x=(nds[i].x+nds[i].vx+1)%1;nds[i].y=(nds[i].y+nds[i].vy+1)%1;nds[i].pulse+=0.03;for(let j=i+1;j<nds.length;j++){const dx=(nds[i].x-nds[j].x)*W,dy=(nds[i].y-nds[j].y)*H,d=Math.sqrt(dx*dx+dy*dy);if(d<220){ctx.save();ctx.globalAlpha=(1-d/220)*0.12;ctx.strokeStyle=nds[i].color;ctx.lineWidth=0.8;ctx.beginPath();ctx.moveTo(nds[i].x*W,nds[i].y*H);ctx.lineTo(nds[j].x*W,nds[j].y*H);ctx.stroke();ctx.restore();}}}
 nds.forEach(n=>{const p=1+0.25*Math.sin(n.pulse);ctx.save();ctx.globalAlpha=0.7;ctx.shadowColor=n.color;ctx.shadowBlur=15*p;ctx.fillStyle=n.color;ctx.beginPath();ctx.arc(n.x*W,n.y*H,n.r*p,0,Math.PI*2);ctx.fill();ctx.restore();});
 streams.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.life++;p.trail.push({x:p.x%W,y:p.y%H});if(p.trail.length>12)p.trail.shift();if(p.life>p.maxLife)rS(p);if(p.trail.length>1){ctx.save();for(let i=1;i<p.trail.length;i++){const f=i/p.trail.length;ctx.globalAlpha=p.alpha*f*0.5;ctx.strokeStyle=p.color;ctx.lineWidth=p.r*f*0.8;ctx.beginPath();ctx.moveTo(p.trail[i-1].x,p.trail[i-1].y);ctx.lineTo(p.trail[i].x,p.trail[i].y);ctx.stroke();}ctx.restore();}const f=p.life<60?p.life/60:p.life>p.maxLife-60?(p.maxLife-p.life)/60:1;ctx.save();ctx.globalAlpha=p.alpha*f;ctx.fillStyle=p.color;ctx.shadowColor=p.color;ctx.shadowBlur=10;ctx.beginPath();ctx.arc(p.x%W,p.y%H,p.r,0,Math.PI*2);ctx.fill();ctx.restore();});
-requestAnimationFrame(draw);}requestAnimationFrame(draw);
+if(!_paused){const now=ts||0;if(now-_lastFrame>=33){_lastFrame=now;}}requestAnimationFrame(draw);}requestAnimationFrame(draw);
 const wd=[{t:'AWS',c:'#ff9900',s:22,o:0.18},{t:'AZURE',c:'#0078d4',s:20,o:0.18},{t:'GOOGLE CLOUD',c:'#4285f4',s:18,o:0.15},{t:'DATABRICKS',c:'#ff3621',s:18,o:0.14},{t:'PYSPARK',c:'#00e5ff',s:17,o:0.16},{t:'DELTA LAKE',c:'#00bfa5',s:17,o:0.14},{t:'UNITY CATALOG',c:'#7c4dff',s:16,o:0.13},{t:'AI AGENTS',c:'#ea80fc',s:20,o:0.17},{t:'BEDROCK',c:'#ff9900',s:16,o:0.13},{t:'LANGCHAIN',c:'#00e676',s:16,o:0.14},{t:'VERTEX AI',c:'#4285f4',s:17,o:0.14},{t:'AZURE OPENAI',c:'#0078d4',s:16,o:0.13},{t:'KAFKA',c:'#00e5ff',s:16,o:0.13},{t:'AIRFLOW',c:'#00bfa5',s:15,o:0.12},{t:'DBT',c:'#ff6b35',s:18,o:0.14},{t:'MEDALLION',c:'#7c4dff',s:17,o:0.13},{t:'LANGGRAPH',c:'#ea80fc',s:16,o:0.13},{t:'S3',c:'#ff9900',s:20,o:0.15},{t:'ETL',c:'#00e676',s:22,o:0.16},{t:'ML OPS',c:'#ea80fc',s:17,o:0.14},{t:'RAG',c:'#7c4dff',s:20,o:0.15},{t:'VECTOR DB',c:'#00bfa5',s:16,o:0.13},{t:'DATA LAKE',c:'#00e5ff',s:17,o:0.14},{t:'REDSHIFT',c:'#ff9900',s:16,o:0.12},{t:'SYNAPSE',c:'#0078d4',s:16,o:0.12}];
 const sc=document.getElementById('skillWords');
 wd.forEach(w=>{const el=document.createElement('div');el.className='skill-word';el.textContent=w.t;const rot=(Math.random()-0.5)*20,dur=20+Math.random()*25;el.style.cssText='left:'+(5+Math.random()*85)+'%;font-size:'+w.s+'px;color:'+w.c+';--rot:'+rot+'deg;--max-op:'+w.o+';animation-duration:'+dur+'s;animation-delay:-'+(Math.random()*dur)+'s;text-shadow:0 0 20px '+w.c+'66;';sc.appendChild(el);});
