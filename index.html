@@ -15,14 +15,14 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 :root { --cyan:#00e5ff; --teal:#00bfa5; --azure:#0078d4; --gcp:#4285f4; --aws:#ff9900; --purple:#7c4dff; --green:#00e676; --gold:#ffd740; --rose:#ff4081; --text:#e8f4f8; --muted:#78909c; --bg:#020b18; }
-html,body { min-height:100vh; background:var(--bg); color:var(--text); font-family:'Rajdhani',sans-serif; overflow-x:hidden; overscroll-behavior:none; }
-#bg-canvas { position:fixed; inset:0; z-index:0; pointer-events:none; will-change:transform; }
-.cloud-orbs { position:fixed; inset:0; z-index:1; pointer-events:none; }
-.orb { position:absolute; border-radius:50%; filter:blur(80px); opacity:0.12; animation:orbFloat ease-in-out infinite; }
+html,body { min-height:100vh; background:var(--bg); color:var(--text); font-family:'Rajdhani',sans-serif; overflow-x:hidden; overscroll-behavior:none; scroll-behavior:smooth; -webkit-overflow-scrolling:touch; }
+#bg-canvas { position:fixed; inset:0; z-index:0; pointer-events:none; transform:translateZ(0); will-change:transform; }
+.cloud-orbs { position:fixed; inset:0; z-index:1; pointer-events:none; transform:translateZ(0); }
+.orb { position:absolute; border-radius:50%; filter:blur(80px); opacity:0.12; will-change:transform; transform:translateZ(0); animation:orbFloat ease-in-out infinite; }
 @keyframes orbFloat { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(30px,-20px) scale(1.05)} 66%{transform:translate(-20px,15px) scale(0.95)} }
-.hex-grid { position:fixed; inset:0; z-index:2; pointer-events:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='52'%3E%3Cpolygon points='30,2 58,17 58,47 30,62 2,47 2,17' fill='none' stroke='rgba(0,229,255,0.04)' stroke-width='1'/%3E%3C/svg%3E"); background-size:60px 52px; }
-.scanlines { position:fixed; inset:0; z-index:3; pointer-events:none; background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.06) 3px,rgba(0,0,0,0.06) 4px); }
-.skill-words { position:fixed; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
+.hex-grid { position:fixed; inset:0; z-index:2; pointer-events:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='52'%3E%3Cpolygon points='30,2 58,17 58,47 30,62 2,47 2,17' fill='none' stroke='rgba(0,229,255,0.04)' stroke-width='1'/%3E%3C/svg%3E"); background-size:60px 52px;  transform:translateZ(0);}
+.scanlines { position:fixed; inset:0; z-index:3; pointer-events:none; background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.06) 3px,rgba(0,0,0,0.06) 4px);  transform:translateZ(0);}
+.skill-words { position:fixed; inset:0; z-index:1; pointer-events:none; overflow:hidden; transform:translateZ(0); }
 .skill-word { position:absolute; font-family:'JetBrains Mono',monospace; font-weight:500; letter-spacing:2px; text-transform:uppercase; opacity:0; animation:floatWord linear infinite; white-space:nowrap; }
 @keyframes floatWord { 0%{opacity:0;transform:translateY(100vh) rotate(var(--rot))} 8%{opacity:var(--max-op)} 88%{opacity:var(--max-op)} 100%{opacity:0;transform:translateY(-20vh) rotate(var(--rot))} }
 .wrapper { position:relative; z-index:10; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:40px 20px 80px; }
@@ -107,6 +107,38 @@ html,body { min-height:100vh; background:var(--bg); color:var(--text); font-fami
 .ticker-dot{width:6px;height:6px;border-radius:50%;background:#7c4dff;box-shadow:0 0 8px #7c4dff;}
 .footer{margin-top:32px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(120,144,156,0.5);letter-spacing:2px;max-width:820px;width:100%;}
 @media(max-width:600px){.card-inner{padding:28px 20px 24px;}.cloud-badges{gap:8px;}.cloud-badge{font-size:10px;padding:6px 12px;}}
+
+/* ── SCROLL REVEAL ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.6s cubic-bezier(0.22,1,0.36,1), transform 0.6s cubic-bezier(0.22,1,0.36,1);
+  will-change: opacity, transform;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ── PILL HOVER LIFT ── */
+.pill { cursor: default; }
+
+/* ── SMOOTH BADGE HOVER ── */
+.cloud-badge { transition: transform 0.25s cubic-bezier(0.22,1,0.36,1), box-shadow 0.25s ease; }
+
+/* ── CTA BUTTON SMOOTH ── */
+.cta-btn { transition: box-shadow 0.35s ease, transform 0.35s cubic-bezier(0.22,1,0.36,1), color 0.2s ease, letter-spacing 0.3s ease, border-color 0.3s ease; }
+
+/* ── INFO CARD SMOOTH ── */
+.info-card { transition: background 0.25s ease, border-color 0.25s ease, transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s ease; }
+
+/* ── COUNTDOWN ITEM ── */
+.cd-item { transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; }
+
 </style>
 </head>
 <body>
@@ -147,7 +179,7 @@ html,body { min-height:100vh; background:var(--bg); color:var(--text); font-fami
       <div class="launch-item">🎯 <span class="val">Limited Seats</span></div>
     </div>
   </div>
-  <div class="cloud-badges">
+  <div class="cloud-badges reveal">
     <div class="cloud-badge badge-aws"><span class="badge-icon">☀</span> AWS</div>
     <div class="cloud-badge badge-azure"><span class="badge-icon">△</span> AZURE</div>
     <div class="cloud-badge badge-gcp"><span class="badge-icon">⬤</span> GOOGLE CLOUD</div>
@@ -155,7 +187,7 @@ html,body { min-height:100vh; background:var(--bg); color:var(--text); font-fami
     <div class="cloud-badge badge-da"><span class="badge-icon">📊</span> DATA ANALYTICS</div>
     <div class="cloud-badge badge-ai"><span class="badge-icon">🤖</span> AI AGENTS</div>
   </div>
-  <div class="skill-pills">
+  <div class="skill-pills reveal reveal-delay-1">
     <div class="pill">★ PySpark</div><div class="pill">★ Databricks</div>
     <div class="pill">★ Delta Lake</div><div class="pill">★ Unity Catalog</div>
     <div class="pill">★ Medallion Architecture</div><div class="pill">★ Amazon Bedrock</div>
@@ -163,7 +195,7 @@ html,body { min-height:100vh; background:var(--bg); color:var(--text); font-fami
     <div class="pill">★ Apache Kafka</div><div class="pill">★ dbt</div>
     <div class="pill">★ Airflow</div><div class="pill">★ LangGraph</div>
   </div>
-  <div class="cta-card">
+  <div class="cta-card reveal reveal-delay-2">
     <div class="corner corner-tl"></div><div class="corner corner-tr"></div>
     <div class="corner corner-bl"></div><div class="corner corner-br"></div>
     <div class="card-inner">
@@ -193,8 +225,8 @@ html,body { min-height:100vh; background:var(--bg); color:var(--text); font-fami
       </div>
     </div>
   </div>
-  <div class="ai-ticker"><div class="ticker-track" id="ticker"></div></div>
-  <div class="footer">&copy; 2026 HITAVIRTECH · DATA ENGINEERING &amp; ANALYTICS WITH AGENTIC AI · BATCH 05</div>
+  <div class="ai-ticker reveal reveal-delay-3"><div class="ticker-track" id="ticker"></div></div>
+  <div class="footer reveal reveal-delay-4">&copy; 2026 HITAVIRTECH · DATA ENGINEERING &amp; ANALYTICS WITH AGENTIC AI · BATCH 05</div>
 </div>
 <script>
 // ── PERFORMANCE: Pause when tab hidden
@@ -372,6 +404,18 @@ function cd() {
   document.getElementById('cd-s').textContent=String(Math.floor((diff%60000)/1000)).padStart(2,'0');
 }
 cd(); setInterval(cd, 1000);
+
+
+// ── SCROLL REVEAL OBSERVER ──
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
 // ── COPY LINK (removed - direct link removed from page)
 </script>
