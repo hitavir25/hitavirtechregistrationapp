@@ -139,9 +139,277 @@ html,body { min-height:100vh; background:var(--bg); color:var(--text); font-fami
 /* ── COUNTDOWN ITEM ── */
 .cd-item { transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; }
 
+
+/* ═══ DATABRICKS-INSPIRED SCROLL ENHANCEMENTS ═══ */
+
+/* 1. Sticky header with scroll-activated shadow (like Databricks header) */
+.logo-badge {
+  position: sticky;
+  top: 16px;
+  z-index: 100;
+  transition: box-shadow 0.2s ease-out, background 0.2s ease-out;
+}
+
+/* 2. Font antialiasing — Databricks uses DM Sans with antialiased rendering */
+* { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+/* 3. CTA card sticky on scroll — like Databricks enrollment sidebar */
+.cta-card {
+  position: sticky;
+  top: 24px;
+}
+
+/* 4. Databricks-style opacity fade transitions (0.2-0.3s linear) on all interactive elements */
+.cloud-badge,
+.pill,
+.info-card,
+.cd-item,
+.cta-btn,
+.privacy-banner {
+  transition: opacity 0.2s linear, transform 0.25s cubic-bezier(0.22,1,0.36,1),
+              box-shadow 0.2s ease-out, background 0.2s linear,
+              border-color 0.2s linear !important;
+}
+
+/* 5. Scroll-reveal: stagger children inside badges/pills like Databricks skill tags */
+.cloud-badges.visible .cloud-badge:nth-child(1) { transition-delay: 0.05s; }
+.cloud-badges.visible .cloud-badge:nth-child(2) { transition-delay: 0.10s; }
+.cloud-badges.visible .cloud-badge:nth-child(3) { transition-delay: 0.15s; }
+.cloud-badges.visible .cloud-badge:nth-child(4) { transition-delay: 0.20s; }
+.cloud-badges.visible .cloud-badge:nth-child(5) { transition-delay: 0.25s; }
+.cloud-badges.visible .cloud-badge:nth-child(6) { transition-delay: 0.30s; }
+
+.skill-pills.visible .pill:nth-child(odd)  { transition-delay: 0.05s; }
+.skill-pills.visible .pill:nth-child(even) { transition-delay: 0.12s; }
+
+/* 6. Databricks-style accordion section expand (margin-top + opacity like their syllabus) */
+.info-grid .info-card {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.2s linear, margin-top 0.2s ease-in, transform 0.25s cubic-bezier(0.22,1,0.36,1) !important;
+}
+.cta-card.visible .info-card { opacity: 1; transform: translateY(0); }
+.cta-card.visible .info-card:nth-child(1) { transition-delay: 0.05s; }
+.cta-card.visible .info-card:nth-child(2) { transition-delay: 0.12s; }
+.cta-card.visible .info-card:nth-child(3) { transition-delay: 0.19s; }
+.cta-card.visible .info-card:nth-child(4) { transition-delay: 0.26s; }
+
+/* 7. Countdown cards — Databricks-style width/height animated reveal */
+.countdown-row { overflow: hidden; }
+.cd-item {
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.2s linear, transform 0.2s ease-out,
+              width 0.2s linear, height 0.2s linear !important;
+}
+.cta-card.visible .cd-item { opacity: 1; transform: scale(1); }
+.cta-card.visible .cd-item:nth-child(1) { transition-delay: 0.00s; }
+.cta-card.visible .cd-item:nth-child(2) { transition-delay: 0.08s; }
+.cta-card.visible .cd-item:nth-child(3) { transition-delay: 0.16s; }
+.cta-card.visible .cd-item:nth-child(4) { transition-delay: 0.24s; }
+
+/* 8. Ticker fade-in from bottom */
+.ai-ticker {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s linear 0.1s, transform 0.3s ease-out 0.1s !important;
+}
+.ai-ticker.visible { opacity: 1; transform: translateY(0); }
+
+/* 9. Privacy banner — delayed fade like Databricks course details */
+.privacy-banner {
+  opacity: 0;
+  transition: opacity 0.2s linear 0.2s !important;
+}
+.cta-card.visible .privacy-banner { opacity: 1; }
+
+/* 10. REGISTER NOW button — Databricks enroll button scale on hover */
+.cta-btn:hover { transform: translateY(-2px) scale(1.01) !important; }
+.cta-btn:active { transform: translateY(0) scale(0.99) !important; transition-duration: 0.08s !important; }
+
+/* 11. Smooth scroll offset for sticky header */
+html { scroll-padding-top: 80px; }
+
+/* 12. Scroll progress indicator (subtle, like Databricks breadcrumb progress) */
+#scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--cyan), var(--azure), var(--purple));
+  z-index: 9999;
+  transition: width 0.1s linear;
+  will-change: width;
+}
+
+/* 13. Back-to-top button (Databricks has scroll-up affordance) */
+#back-to-top {
+  position: fixed;
+  bottom: 32px; right: 32px;
+  width: 44px; height: 44px;
+  background: rgba(0,229,255,0.1);
+  border: 1px solid rgba(0,229,255,0.3);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out,
+              background 0.2s linear, border-color 0.2s linear;
+  z-index: 9998;
+  will-change: transform, opacity;
+  backdrop-filter: blur(10px);
+  color: var(--cyan);
+  text-decoration: none;
+}
+#back-to-top.show { opacity: 1; transform: translateY(0); }
+#back-to-top:hover {
+  background: rgba(0,229,255,0.2);
+  border-color: rgba(0,229,255,0.7);
+  box-shadow: 0 0 20px rgba(0,229,255,0.3);
+  transform: translateY(-3px);
+}
+
+
+/* ═══ DATABRICKS-INSPIRED SCROLL ENHANCEMENTS ═══ */
+
+/* 1. Sticky header with scroll-activated shadow (like Databricks header) */
+.logo-badge {
+  position: sticky;
+  top: 16px;
+  z-index: 100;
+  transition: box-shadow 0.2s ease-out, background 0.2s ease-out;
+}
+
+/* 2. Font antialiasing — Databricks uses DM Sans with antialiased rendering */
+* { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+/* 3. CTA card sticky on scroll — like Databricks enrollment sidebar */
+.cta-card {
+  position: sticky;
+  top: 24px;
+}
+
+/* 4. Databricks-style opacity fade transitions (0.2-0.3s linear) on all interactive elements */
+.cloud-badge,
+.pill,
+.info-card,
+.cd-item,
+.cta-btn,
+.privacy-banner {
+  transition: opacity 0.2s linear, transform 0.25s cubic-bezier(0.22,1,0.36,1),
+              box-shadow 0.2s ease-out, background 0.2s linear,
+              border-color 0.2s linear !important;
+}
+
+/* 5. Scroll-reveal: stagger children inside badges/pills like Databricks skill tags */
+.cloud-badges.visible .cloud-badge:nth-child(1) { transition-delay: 0.05s; }
+.cloud-badges.visible .cloud-badge:nth-child(2) { transition-delay: 0.10s; }
+.cloud-badges.visible .cloud-badge:nth-child(3) { transition-delay: 0.15s; }
+.cloud-badges.visible .cloud-badge:nth-child(4) { transition-delay: 0.20s; }
+.cloud-badges.visible .cloud-badge:nth-child(5) { transition-delay: 0.25s; }
+.cloud-badges.visible .cloud-badge:nth-child(6) { transition-delay: 0.30s; }
+
+.skill-pills.visible .pill:nth-child(odd)  { transition-delay: 0.05s; }
+.skill-pills.visible .pill:nth-child(even) { transition-delay: 0.12s; }
+
+/* 6. Databricks-style accordion section expand (margin-top + opacity like their syllabus) */
+.info-grid .info-card {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.2s linear, margin-top 0.2s ease-in, transform 0.25s cubic-bezier(0.22,1,0.36,1) !important;
+}
+.cta-card.visible .info-card { opacity: 1; transform: translateY(0); }
+.cta-card.visible .info-card:nth-child(1) { transition-delay: 0.05s; }
+.cta-card.visible .info-card:nth-child(2) { transition-delay: 0.12s; }
+.cta-card.visible .info-card:nth-child(3) { transition-delay: 0.19s; }
+.cta-card.visible .info-card:nth-child(4) { transition-delay: 0.26s; }
+
+/* 7. Countdown cards — Databricks-style width/height animated reveal */
+.countdown-row { overflow: hidden; }
+.cd-item {
+  opacity: 0;
+  transform: scale(0.85);
+  transition: opacity 0.2s linear, transform 0.2s ease-out,
+              width 0.2s linear, height 0.2s linear !important;
+}
+.cta-card.visible .cd-item { opacity: 1; transform: scale(1); }
+.cta-card.visible .cd-item:nth-child(1) { transition-delay: 0.00s; }
+.cta-card.visible .cd-item:nth-child(2) { transition-delay: 0.08s; }
+.cta-card.visible .cd-item:nth-child(3) { transition-delay: 0.16s; }
+.cta-card.visible .cd-item:nth-child(4) { transition-delay: 0.24s; }
+
+/* 8. Ticker fade-in from bottom */
+.ai-ticker {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s linear 0.1s, transform 0.3s ease-out 0.1s !important;
+}
+.ai-ticker.visible { opacity: 1; transform: translateY(0); }
+
+/* 9. Privacy banner — delayed fade like Databricks course details */
+.privacy-banner {
+  opacity: 0;
+  transition: opacity 0.2s linear 0.2s !important;
+}
+.cta-card.visible .privacy-banner { opacity: 1; }
+
+/* 10. REGISTER NOW button — Databricks enroll button scale on hover */
+.cta-btn:hover { transform: translateY(-2px) scale(1.01) !important; }
+.cta-btn:active { transform: translateY(0) scale(0.99) !important; transition-duration: 0.08s !important; }
+
+/* 11. Smooth scroll offset for sticky header */
+html { scroll-padding-top: 80px; }
+
+/* 12. Scroll progress indicator (subtle, like Databricks breadcrumb progress) */
+#scroll-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, var(--cyan), var(--azure), var(--purple));
+  z-index: 9999;
+  transition: width 0.1s linear;
+  will-change: width;
+}
+
+/* 13. Back-to-top button (Databricks has scroll-up affordance) */
+#back-to-top {
+  position: fixed;
+  bottom: 32px; right: 32px;
+  width: 44px; height: 44px;
+  background: rgba(0,229,255,0.1);
+  border: 1px solid rgba(0,229,255,0.3);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out,
+              background 0.2s linear, border-color 0.2s linear;
+  z-index: 9998;
+  will-change: transform, opacity;
+  backdrop-filter: blur(10px);
+  color: var(--cyan);
+  text-decoration: none;
+}
+#back-to-top.show { opacity: 1; transform: translateY(0); }
+#back-to-top:hover {
+  background: rgba(0,229,255,0.2);
+  border-color: rgba(0,229,255,0.7);
+  box-shadow: 0 0 20px rgba(0,229,255,0.3);
+  transform: translateY(-3px);
+}
+
 </style>
 </head>
 <body>
+<div id="scroll-progress"></div>
+<a id="back-to-top" href="#" aria-label="Back to top" title="Back to top">↑</a>
+<div id="scroll-progress"></div>
+<a id="back-to-top" href="#" aria-label="Back to top" title="Back to top">↑</a>
 <canvas id="bg-canvas"></canvas>
 <div class="cloud-orbs">
   <div class="orb" style="width:500px;height:500px;top:-10%;left:-10%;background:radial-gradient(circle,#0078d4,transparent);animation-duration:18s;"></div>
@@ -416,6 +684,66 @@ const revealObserver = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+
+// ═══ DATABRICKS SCROLL BEHAVIOURS ═══
+
+// 1. Scroll progress bar
+const scrollProgress = document.getElementById('scroll-progress');
+const backToTop = document.getElementById('back-to-top');
+
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  if (scrollProgress) scrollProgress.style.width = progress + '%';
+
+  // Back-to-top visibility (shows after 40% scroll — like Databricks)
+  if (backToTop) {
+    backToTop.classList.toggle('show', scrollTop > docHeight * 0.3);
+  }
+}, { passive: true });
+
+// Back-to-top click
+if (backToTop) {
+  backToTop.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
+
+// 2. Re-run reveal for info cards & countdown when cta-card becomes visible
+// (already handled by existing IntersectionObserver with .visible class)
+
+
+// ═══ DATABRICKS SCROLL BEHAVIOURS ═══
+
+// 1. Scroll progress bar
+const scrollProgress = document.getElementById('scroll-progress');
+const backToTop = document.getElementById('back-to-top');
+
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  if (scrollProgress) scrollProgress.style.width = progress + '%';
+
+  // Back-to-top visibility (shows after 40% scroll — like Databricks)
+  if (backToTop) {
+    backToTop.classList.toggle('show', scrollTop > docHeight * 0.3);
+  }
+}, { passive: true });
+
+// Back-to-top click
+if (backToTop) {
+  backToTop.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
+
+// 2. Re-run reveal for info cards & countdown when cta-card becomes visible
+// (already handled by existing IntersectionObserver with .visible class)
 
 // ── COPY LINK (removed - direct link removed from page)
 </script>
