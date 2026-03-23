@@ -15,8 +15,8 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 :root { --cyan:#00e5ff; --teal:#00bfa5; --azure:#0078d4; --gcp:#4285f4; --aws:#ff9900; --purple:#7c4dff; --green:#00e676; --gold:#ffd740; --rose:#ff4081; --text:#e8f4f8; --muted:#78909c; --bg:#020b18; }
-html,body { min-height:100vh; background:var(--bg); color:var(--text); font-family:'Rajdhani',sans-serif; overflow-x:hidden; }
-#bg-canvas { position:fixed; inset:0; z-index:0; pointer-events:none; }
+html,body { min-height:100vh; background:var(--bg); color:var(--text); font-family:'Rajdhani',sans-serif; overflow-x:hidden; overscroll-behavior:none; }
+#bg-canvas { position:fixed; inset:0; z-index:0; pointer-events:none; will-change:transform; }
 .cloud-orbs { position:fixed; inset:0; z-index:1; pointer-events:none; }
 .orb { position:absolute; border-radius:50%; filter:blur(80px); opacity:0.12; animation:orbFloat ease-in-out infinite; }
 @keyframes orbFloat { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(30px,-20px) scale(1.05)} 66%{transform:translate(-20px,15px) scale(0.95)} }
@@ -197,30 +197,183 @@ html,body { min-height:100vh; background:var(--bg); color:var(--text); font-fami
   <div class="footer">&copy; 2026 HITAVIRTECH · DATA ENGINEERING &amp; ANALYTICS WITH AGENTIC AI · BATCH 05</div>
 </div>
 <script>
-const canvas=document.getElementById('bg-canvas'),ctx=canvas.getContext('2d');let W,H;
-function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
-window.addEventListener('resize',resize);resize();
-const stars=Array.from({length:200},()=>({x:Math.random()*2000,y:Math.random()*2000,r:Math.random()*1.8+0.2,alpha:Math.random()*0.7+0.2,twinkle:Math.random()*Math.PI*2,speed:Math.random()*0.02+0.005}));
-const streams=Array.from({length:50},()=>rS({}));
-function rS(p){p.x=Math.random()*2000;p.y=Math.random()*2000;p.vx=(Math.random()-0.5)*0.6;p.vy=(Math.random()-0.5)*0.6;p.r=Math.random()*2+0.5;const c=['#00e5ff','#00bfa5','#0078d4','#4285f4','#ff9900','#7c4dff','#00e676','#ea80fc'];p.color=c[Math.floor(Math.random()*c.length)];p.alpha=Math.random()*0.6+0.15;p.life=0;p.maxLife=Math.random()*400+200;p.trail=[];return p;}
-const neb=[{x:0.15,y:0.2,r:250,color:'#0078d4',a:0.06},{x:0.85,y:0.3,r:200,color:'#ff9900',a:0.06},{x:0.5,y:0.7,r:280,color:'#7c4dff',a:0.07},{x:0.1,y:0.8,r:180,color:'#00e5ff',a:0.05},{x:0.9,y:0.8,r:220,color:'#4285f4',a:0.06}];
-const nds=Array.from({length:14},()=>({x:Math.random(),y:Math.random(),vx:(Math.random()-0.5)*0.0003,vy:(Math.random()-0.5)*0.0003,r:Math.random()*4+2,color:['#00e5ff','#0078d4','#ff9900','#7c4dff','#4285f4'][Math.floor(Math.random()*5)],pulse:Math.random()*Math.PI*2}));
-let _lastFrame=0,_paused=false;
-document.addEventListener('visibilitychange',()=>{_paused=document.hidden;});
-function draw(ts){ctx.clearRect(0,0,W,H);const g=ctx.createRadialGradient(W*.5,H*.4,0,W*.5,H*.4,Math.max(W,H)*.8);g.addColorStop(0,'#020f2a');g.addColorStop(.4,'#020b18');g.addColorStop(1,'#010810');ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
-neb.forEach(n=>{const ng=ctx.createRadialGradient(n.x*W,n.y*H,0,n.x*W,n.y*H,n.r);ng.addColorStop(0,n.color+Math.round(n.a*255).toString(16).padStart(2,'0'));ng.addColorStop(1,'transparent');ctx.fillStyle=ng;ctx.fillRect(0,0,W,H);});
-stars.forEach(s=>{s.twinkle+=s.speed;const a=s.alpha*(0.6+0.4*Math.sin(s.twinkle));ctx.save();ctx.globalAlpha=a;ctx.fillStyle='#fff';ctx.shadowColor='#a0d8ef';ctx.shadowBlur=s.r>1.2?6:2;ctx.beginPath();ctx.arc(s.x%W,s.y%H,s.r,0,Math.PI*2);ctx.fill();ctx.restore();});
-for(let i=0;i<nds.length;i++){nds[i].x=(nds[i].x+nds[i].vx+1)%1;nds[i].y=(nds[i].y+nds[i].vy+1)%1;nds[i].pulse+=0.03;for(let j=i+1;j<nds.length;j++){const dx=(nds[i].x-nds[j].x)*W,dy=(nds[i].y-nds[j].y)*H,d=Math.sqrt(dx*dx+dy*dy);if(d<220){ctx.save();ctx.globalAlpha=(1-d/220)*0.12;ctx.strokeStyle=nds[i].color;ctx.lineWidth=0.8;ctx.beginPath();ctx.moveTo(nds[i].x*W,nds[i].y*H);ctx.lineTo(nds[j].x*W,nds[j].y*H);ctx.stroke();ctx.restore();}}}
-nds.forEach(n=>{const p=1+0.25*Math.sin(n.pulse);ctx.save();ctx.globalAlpha=0.7;ctx.shadowColor=n.color;ctx.shadowBlur=15*p;ctx.fillStyle=n.color;ctx.beginPath();ctx.arc(n.x*W,n.y*H,n.r*p,0,Math.PI*2);ctx.fill();ctx.restore();});
-streams.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.life++;p.trail.push({x:p.x%W,y:p.y%H});if(p.trail.length>12)p.trail.shift();if(p.life>p.maxLife)rS(p);if(p.trail.length>1){ctx.save();for(let i=1;i<p.trail.length;i++){const f=i/p.trail.length;ctx.globalAlpha=p.alpha*f*0.5;ctx.strokeStyle=p.color;ctx.lineWidth=p.r*f*0.8;ctx.beginPath();ctx.moveTo(p.trail[i-1].x,p.trail[i-1].y);ctx.lineTo(p.trail[i].x,p.trail[i].y);ctx.stroke();}ctx.restore();}const f=p.life<60?p.life/60:p.life>p.maxLife-60?(p.maxLife-p.life)/60:1;ctx.save();ctx.globalAlpha=p.alpha*f;ctx.fillStyle=p.color;ctx.shadowColor=p.color;ctx.shadowBlur=10;ctx.beginPath();ctx.arc(p.x%W,p.y%H,p.r,0,Math.PI*2);ctx.fill();ctx.restore();});
-if(!_paused){const now=ts||0;if(now-_lastFrame>=33){_lastFrame=now;}}requestAnimationFrame(draw);}requestAnimationFrame(draw);
-const wd=[{t:'AWS',c:'#ff9900',s:22,o:0.18},{t:'AZURE',c:'#0078d4',s:20,o:0.18},{t:'GOOGLE CLOUD',c:'#4285f4',s:18,o:0.15},{t:'DATABRICKS',c:'#ff3621',s:18,o:0.14},{t:'PYSPARK',c:'#00e5ff',s:17,o:0.16},{t:'DELTA LAKE',c:'#00bfa5',s:17,o:0.14},{t:'UNITY CATALOG',c:'#7c4dff',s:16,o:0.13},{t:'AI AGENTS',c:'#ea80fc',s:20,o:0.17},{t:'BEDROCK',c:'#ff9900',s:16,o:0.13},{t:'LANGCHAIN',c:'#00e676',s:16,o:0.14},{t:'VERTEX AI',c:'#4285f4',s:17,o:0.14},{t:'AZURE OPENAI',c:'#0078d4',s:16,o:0.13},{t:'KAFKA',c:'#00e5ff',s:16,o:0.13},{t:'AIRFLOW',c:'#00bfa5',s:15,o:0.12},{t:'DBT',c:'#ff6b35',s:18,o:0.14},{t:'MEDALLION',c:'#7c4dff',s:17,o:0.13},{t:'LANGGRAPH',c:'#ea80fc',s:16,o:0.13},{t:'S3',c:'#ff9900',s:20,o:0.15},{t:'ETL',c:'#00e676',s:22,o:0.16},{t:'ML OPS',c:'#ea80fc',s:17,o:0.14},{t:'RAG',c:'#7c4dff',s:20,o:0.15},{t:'VECTOR DB',c:'#00bfa5',s:16,o:0.13},{t:'DATA LAKE',c:'#00e5ff',s:17,o:0.14},{t:'REDSHIFT',c:'#ff9900',s:16,o:0.12},{t:'SYNAPSE',c:'#0078d4',s:16,o:0.12}];
-const sc=document.getElementById('skillWords');
-wd.forEach(w=>{const el=document.createElement('div');el.className='skill-word';el.textContent=w.t;const rot=(Math.random()-0.5)*20,dur=20+Math.random()*25;el.style.cssText='left:'+(5+Math.random()*85)+'%;font-size:'+w.s+'px;color:'+w.c+';--rot:'+rot+'deg;--max-op:'+w.o+';animation-duration:'+dur+'s;animation-delay:-'+(Math.random()*dur)+'s;text-shadow:0 0 20px '+w.c+'66;';sc.appendChild(el);});
-const ti=['Amazon Bedrock Agents','Azure AI Foundry','Google Vertex AI Agents','LangGraph Workflows','AutoGen Multi-Agent','LangChain Pipelines','RAG Architecture','Vector Embeddings','Semantic Search','AWS Glue ETL','Azure Data Factory','BigQuery Pipelines','Delta Live Tables','Unity Catalog Governance','Medallion Architecture','Real-time Streaming','Apache Kafka','Kinesis Data Streams','PySpark Optimisation','Broadcast Joins','Data Lakehouse'];
-const tr=document.getElementById('ticker');[...ti,...ti].forEach(item=>{const s=document.createElement('div');s.className='ticker-item';s.innerHTML='<div class="ticker-dot"></div>'+item;tr.appendChild(s);});
-function cd(){const diff=new Date('2026-04-05T00:00:00+05:30')-new Date();if(diff<=0){['cd-d','cd-h','cd-m','cd-s'].forEach(id=>document.getElementById(id).textContent='00');return;}document.getElementById('cd-d').textContent=String(Math.floor(diff/86400000)).padStart(2,'0');document.getElementById('cd-h').textContent=String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');document.getElementById('cd-m').textContent=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');document.getElementById('cd-s').textContent=String(Math.floor((diff%60000)/1000)).padStart(2,'0');}
-cd();setInterval(cd,1000);
+// ── PERFORMANCE: Pause when tab hidden
+let _paused = false;
+document.addEventListener('visibilitychange', () => { _paused = document.hidden; });
+
+// ── CANVAS SETUP
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+let W, H;
+function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+window.addEventListener('resize', resize); resize();
+
+// ── STARS (reduced to 160 for performance)
+const stars = Array.from({length:160}, () => ({
+  x: Math.random()*2000, y: Math.random()*2000,
+  r: Math.random()*1.8+0.2, alpha: Math.random()*0.7+0.2,
+  twinkle: Math.random()*Math.PI*2, speed: Math.random()*0.02+0.005
+}));
+
+// ── DATA STREAMS (reduced to 40)
+const streams = Array.from({length:40}, () => rS({}));
+function rS(p) {
+  p.x=Math.random()*2000; p.y=Math.random()*2000;
+  p.vx=(Math.random()-0.5)*0.6; p.vy=(Math.random()-0.5)*0.6;
+  p.r=Math.random()*2+0.5;
+  const cl=['#00e5ff','#00bfa5','#0078d4','#4285f4','#ff9900','#7c4dff','#00e676','#ea80fc'];
+  p.color=cl[Math.floor(Math.random()*cl.length)];
+  p.alpha=Math.random()*0.6+0.15; p.life=0; p.maxLife=Math.random()*400+200; p.trail=[];
+  return p;
+}
+
+// ── NEBULAE
+const neb = [
+  {x:0.15,y:0.2,r:250,color:'#0078d4',a:0.06},
+  {x:0.85,y:0.3,r:200,color:'#ff9900',a:0.06},
+  {x:0.5,y:0.7,r:280,color:'#7c4dff',a:0.07},
+  {x:0.1,y:0.8,r:180,color:'#00e5ff',a:0.05},
+  {x:0.9,y:0.8,r:220,color:'#4285f4',a:0.06}
+];
+
+// ── NEURAL NODES (reduced to 12)
+const nds = Array.from({length:12}, () => ({
+  x:Math.random(), y:Math.random(),
+  vx:(Math.random()-0.5)*0.0003, vy:(Math.random()-0.5)*0.0003,
+  r:Math.random()*4+2,
+  color:['#00e5ff','#0078d4','#ff9900','#7c4dff','#4285f4'][Math.floor(Math.random()*5)],
+  pulse:Math.random()*Math.PI*2
+}));
+
+// ── THROTTLED DRAW LOOP (30fps cap)
+let _lastFrame = 0;
+function draw(ts) {
+  requestAnimationFrame(draw);
+  if(_paused||ts-_last<33)return;
+  _last=ts;
+  if (ts - _lastFrame < 33) return; // ~30fps cap
+  _lastFrame = ts;
+
+  ctx.clearRect(0,0,W,H);
+
+  // Background gradient
+  const g = ctx.createRadialGradient(W*.5,H*.4,0,W*.5,H*.4,Math.max(W,H)*.8);
+  g.addColorStop(0,'#020f2a'); g.addColorStop(.4,'#020b18'); g.addColorStop(1,'#010810');
+  ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+
+  // Nebulae
+  neb.forEach(n => {
+    const ng = ctx.createRadialGradient(n.x*W,n.y*H,0,n.x*W,n.y*H,n.r);
+    ng.addColorStop(0, n.color+Math.round(n.a*255).toString(16).padStart(2,'0'));
+    ng.addColorStop(1,'transparent');
+    ctx.fillStyle=ng; ctx.fillRect(0,0,W,H);
+  });
+
+  // Stars
+  stars.forEach(s => {
+    s.twinkle += s.speed;
+    const a = s.alpha*(0.6+0.4*Math.sin(s.twinkle));
+    ctx.save(); ctx.globalAlpha=a; ctx.fillStyle='#fff';
+    ctx.shadowColor='#a0d8ef'; ctx.shadowBlur=s.r>1.2?6:2;
+    ctx.beginPath(); ctx.arc(s.x%W,s.y%H,s.r,0,Math.PI*2); ctx.fill(); ctx.restore();
+  });
+
+  // Neural network connections
+  for (let i=0;i<nds.length;i++) {
+    nds[i].x=(nds[i].x+nds[i].vx+1)%1; nds[i].y=(nds[i].y+nds[i].vy+1)%1; nds[i].pulse+=0.03;
+    for (let j=i+1;j<nds.length;j++) {
+      const dx=(nds[i].x-nds[j].x)*W, dy=(nds[i].y-nds[j].y)*H, d=Math.sqrt(dx*dx+dy*dy);
+      if (d<220) {
+        ctx.save(); ctx.globalAlpha=(1-d/220)*0.12; ctx.strokeStyle=nds[i].color;
+        ctx.lineWidth=0.8; ctx.beginPath();
+        ctx.moveTo(nds[i].x*W,nds[i].y*H); ctx.lineTo(nds[j].x*W,nds[j].y*H);
+        ctx.stroke(); ctx.restore();
+      }
+    }
+  }
+
+  // Neural nodes
+  nds.forEach(n => {
+    const p=1+0.25*Math.sin(n.pulse);
+    ctx.save(); ctx.globalAlpha=0.7; ctx.shadowColor=n.color; ctx.shadowBlur=15*p;
+    ctx.fillStyle=n.color; ctx.beginPath(); ctx.arc(n.x*W,n.y*H,n.r*p,0,Math.PI*2);
+    ctx.fill(); ctx.restore();
+  });
+
+  // Data streams
+  streams.forEach(p => {
+    p.x+=p.vx; p.y+=p.vy; p.life++;
+    p.trail.push({x:p.x%W,y:p.y%H}); if(p.trail.length>10) p.trail.shift();
+    if(p.life>p.maxLife) rS(p);
+    if(p.trail.length>1) {
+      ctx.save();
+      for(let i=1;i<p.trail.length;i++) {
+        const f=i/p.trail.length;
+        ctx.globalAlpha=p.alpha*f*0.4; ctx.strokeStyle=p.color; ctx.lineWidth=p.r*f*0.7;
+        ctx.beginPath(); ctx.moveTo(p.trail[i-1].x,p.trail[i-1].y);
+        ctx.lineTo(p.trail[i].x,p.trail[i].y); ctx.stroke();
+      }
+      ctx.restore();
+    }
+    const f=p.life<60?p.life/60:p.life>p.maxLife-60?(p.maxLife-p.life)/60:1;
+    ctx.save(); ctx.globalAlpha=p.alpha*f; ctx.fillStyle=p.color;
+    ctx.shadowColor=p.color; ctx.shadowBlur=8;
+    ctx.beginPath(); ctx.arc(p.x%W,p.y%H,p.r,0,Math.PI*2); ctx.fill(); ctx.restore();
+  });
+}
+requestAnimationFrame(draw);
+
+// ── FLOATING SKILL WORDS
+const wd=[
+  {t:'AWS',c:'#ff9900',s:22,o:0.18},{t:'AZURE',c:'#0078d4',s:20,o:0.18},
+  {t:'GOOGLE CLOUD',c:'#4285f4',s:18,o:0.15},{t:'DATABRICKS',c:'#ff3621',s:18,o:0.14},
+  {t:'PYSPARK',c:'#00e5ff',s:17,o:0.16},{t:'DELTA LAKE',c:'#00bfa5',s:17,o:0.14},
+  {t:'UNITY CATALOG',c:'#7c4dff',s:16,o:0.13},{t:'AI AGENTS',c:'#ea80fc',s:20,o:0.17},
+  {t:'BEDROCK',c:'#ff9900',s:16,o:0.13},{t:'LANGCHAIN',c:'#00e676',s:16,o:0.14},
+  {t:'VERTEX AI',c:'#4285f4',s:17,o:0.14},{t:'AZURE OPENAI',c:'#0078d4',s:16,o:0.13},
+  {t:'KAFKA',c:'#00e5ff',s:16,o:0.13},{t:'AIRFLOW',c:'#00bfa5',s:15,o:0.12},
+  {t:'DBT',c:'#ff6b35',s:18,o:0.14},{t:'MEDALLION',c:'#7c4dff',s:17,o:0.13},
+  {t:'LANGGRAPH',c:'#ea80fc',s:16,o:0.13},{t:'S3',c:'#ff9900',s:20,o:0.15},
+  {t:'ETL',c:'#00e676',s:22,o:0.16},{t:'ML OPS',c:'#ea80fc',s:17,o:0.14},
+  {t:'RAG',c:'#7c4dff',s:20,o:0.15},{t:'VECTOR DB',c:'#00bfa5',s:16,o:0.13},
+  {t:'DATA LAKE',c:'#00e5ff',s:17,o:0.14},{t:'REDSHIFT',c:'#ff9900',s:16,o:0.12}
+];
+const sc = document.getElementById('skillWords');
+wd.forEach(w => {
+  const el = document.createElement('div');
+  el.className = 'skill-word'; el.textContent = w.t;
+  const rot=(Math.random()-0.5)*20, dur=20+Math.random()*25;
+  el.style.cssText='left:'+(5+Math.random()*85)+'%;font-size:'+w.s+'px;color:'+w.c+
+    ';--rot:'+rot+'deg;--max-op:'+w.o+';animation-duration:'+dur+'s;animation-delay:-'+
+    (Math.random()*dur)+'s;text-shadow:0 0 20px '+w.c+'66;';
+  sc.appendChild(el);
+});
+
+// ── AI TICKER
+const ti=['Amazon Bedrock Agents','Azure AI Foundry','Google Vertex AI Agents',
+  'LangGraph Workflows','AutoGen Multi-Agent','LangChain Pipelines','RAG Architecture',
+  'Vector Embeddings','Semantic Search','AWS Glue ETL','Azure Data Factory',
+  'BigQuery Pipelines','Delta Live Tables','Unity Catalog Governance',
+  'Medallion Architecture','Real-time Streaming','Apache Kafka','Kinesis Data Streams',
+  'PySpark Optimisation','Broadcast Joins','Data Lakehouse'];
+const tr = document.getElementById('ticker');
+[...ti,...ti].forEach(item => {
+  const s=document.createElement('div'); s.className='ticker-item';
+  s.innerHTML='<div class="ticker-dot"></div>'+item; tr.appendChild(s);
+});
+
+// ── COUNTDOWN
+function cd() {
+  const diff = new Date('2026-04-05T00:00:00+05:30') - new Date();
+  if(diff<=0){['cd-d','cd-h','cd-m','cd-s'].forEach(id=>document.getElementById(id).textContent='00');return;}
+  document.getElementById('cd-d').textContent=String(Math.floor(diff/86400000)).padStart(2,'0');
+  document.getElementById('cd-h').textContent=String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
+  document.getElementById('cd-m').textContent=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+  document.getElementById('cd-s').textContent=String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+}
+cd(); setInterval(cd, 1000);
+
+// ── COPY LINK (removed - direct link removed from page)
 </script>
 </body>
 </html>
