@@ -245,32 +245,9 @@ html, body {
 
 .section-desc { font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 36px; }
 
-.steps {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 16px; margin-bottom: 36px;
-}
 
-.step {
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 10px; padding: 20px 16px;
-  text-align: center; transition: all 0.3s;
-  position: relative; overflow: hidden;
-}
-.step::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, transparent, rgba(0,245,255,0.04)); opacity: 0; transition: opacity 0.3s; }
-.step:hover { border-color: rgba(0,245,255,0.25); transform: translateY(-3px); }
-.step:hover::after { opacity: 1; }
 
-.step-num { font-family: 'Orbitron', monospace; font-size: 28px; font-weight: 900; line-height: 1; margin-bottom: 8px; }
-.step-label { font-size: 11px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px; color: var(--muted); text-transform: uppercase; }
 
-.step:nth-child(1) .step-num { color: var(--cyan); text-shadow: 0 0 15px rgba(0,245,255,0.4); }
-.step:nth-child(2) .step-num { color: var(--purple); text-shadow: 0 0 15px rgba(157,78,221,0.4); }
-.step:nth-child(3) .step-num { color: var(--orange); text-shadow: 0 0 15px rgba(255,107,26,0.4); }
-.step:nth-child(4) .step-num { color: var(--green); text-shadow: 0 0 15px rgba(0,255,136,0.4); }
-
-.divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(0,245,255,0.15), rgba(157,78,221,0.15), transparent); margin: 32px 0; }
 
 .privacy-banner {
   display: flex; align-items: flex-start; gap: 14px;
@@ -385,14 +362,6 @@ html, body {
           <div class="countdown-item"><span class="countdown-val" id="cd-m">--</span><span class="countdown-unit">Minutes</span></div>
           <div class="countdown-item"><span class="countdown-val" id="cd-s">--</span><span class="countdown-unit">Seconds</span></div>
         </div>
-
-        <div class="steps">
-          <div class="step"><div class="step-num">01</div><div class="step-label">Personal Info</div></div>
-          <div class="step"><div class="step-num">02</div><div class="step-label">Academic</div></div>
-          <div class="step"><div class="step-num">03</div><div class="step-label">Professional</div></div>
-          <div class="step"><div class="step-num">04</div><div class="step-label">Emergency</div></div>
-        </div>
-
         <div class="divider"></div>
 
         <div class="privacy-banner">
