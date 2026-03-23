@@ -532,56 +532,6 @@ html, body {
 .cta-btn .arrow { margin-left: 14px; transition: transform 0.3s; }
 .cta-btn:hover .arrow { transform: translateX(8px); }
 
-/* ── SHORT LINK ── */
-.link-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 16px;
-  flex-wrap: wrap;
-}
-
-.link-label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  color: var(--muted);
-  letter-spacing: 2px;
-}
-
-.short-link {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
-  color: var(--aws);
-  background: rgba(255,153,0,0.08);
-  border: 1px solid rgba(255,153,0,0.3);
-  border-radius: 6px;
-  padding: 5px 14px;
-  text-decoration: none;
-  transition: all 0.2s;
-}
-
-.short-link:hover {
-  background: rgba(255,153,0,0.16);
-  border-color: var(--aws);
-  box-shadow: 0 0 15px rgba(255,153,0,0.25);
-}
-
-.copy-btn {
-  background: none;
-  border: 1px solid var(--muted);
-  border-radius: 6px;
-  padding: 5px 12px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  color: var(--muted);
-  cursor: pointer;
-  transition: all 0.2s;
-  letter-spacing: 1px;
-}
-
-.copy-btn:hover { border-color: var(--cyan); color: var(--cyan); }
-.copy-btn.copied { border-color: var(--green); color: var(--green); }
 
 /* ── INFO GRID ── */
 .info-grid {
@@ -788,14 +738,6 @@ html, body {
       <a href="https://forms.gle/oG3bv8VPVK9CPHtB6" target="_blank" class="cta-btn">
         REGISTER NOW <span class="arrow">&#8594;</span>
       </a>
-
-      <!-- SHORT LINK -->
-      <div class="link-row">
-        <span class="link-label">DIRECT LINK:</span>
-        <a href="https://forms.gle/oG3bv8VPVK9CPHtB6" target="_blank" class="short-link">forms.gle/oG3bv8VPVK9CPHtB6</a>
-        <button class="copy-btn" onclick="copyLink(this)">COPY</button>
-      </div>
-
       <!-- INFO GRID -->
       <div class="info-grid">
         <div class="info-card"><span class="info-icon">&#128197;</span><div class="info-value">APR 05</div><div class="info-key">Course Start &middot; 2026</div></div>
