@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hitavir25.github.io/hitavirtechregistrationapp/sitemap.xml
