@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HitaVirTech — World-Class Typography System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" onload="this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"></noscript>
+
+<style>
+/* ══════════════════════════════════════════════════════════════
+   HITAVIRTECH TYPOGRAPHY SYSTEM v1.0
+   Base: 16px | Scale: 1.25 (Major Third) | Font: Inter / System UI
+   Strategy: clamp() fluid + rem — WCAG AA compliant
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── 1. CSS Custom Properties — Single Source of Truth ── */
+:root {
+  /* Font Families */
+  --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-body:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', 'Fira Code', 'Cascadia Code', ui-monospace, monospace;
+  --font-ui:      'Inter', system-ui, sans-serif;
+
+  /* ── Type Scale: Base 16px × 1.25 (Major Third) ──
+     Each step = previous × 1.25
+     xs:  10.24px  →  0.64rem
+     sm:  12.80px  →  0.80rem
+     md:  16.00px  →  1.00rem  ← BASE
+     lg:  20.00px  →  1.25rem
+     xl:  25.00px  →  1.5625rem
+     2xl: 31.25px  →  1.953rem
+     3xl: 39.06px  →  2.441rem
+     4xl: 48.83px  →  3.052rem
+     5xl: 61.04px  →  3.815rem
+     6xl: 76.29px  →  4.768rem
+  */
+
+  /* Static scale (rem) */
+  --text-xs:   0.64rem;    /* 10.24px — captions, legal */
+  --text-sm:   0.80rem;    /* 12.80px — labels, metadata */
+  --text-base: 1.00rem;    /* 16.00px — body (baseline) */
+  --text-md:   1.125rem;   /* 18.00px — lead text */
+  --text-lg:   1.25rem;    /* 20.00px — large body, H6 */
+  --text-xl:   1.5625rem;  /* 25.00px — H5 */
+  --text-2xl:  1.953rem;   /* 31.25px — H4 */
+  --text-3xl:  2.441rem;   /* 39.06px — H3 */
+  --text-4xl:  3.052rem;   /* 48.83px — H2 */
+  --text-5xl:  3.815rem;   /* 61.04px — H1 */
+  --text-6xl:  4.768rem;   /* 76.29px — Hero display */
+  --text-hero: 5.96rem;    /* 95.37px — Mega hero */
+
+  /* Fluid clamp() sizes — min vw: 375px, max vw: 1440px */
+  --fluid-xs:      clamp(0.60rem, 0.55rem + 0.25vw, 0.75rem);
+  --fluid-sm:      clamp(0.75rem, 0.70rem + 0.27vw, 0.875rem);
+  --fluid-base:    clamp(0.9375rem, 0.875rem + 0.33vw, 1.0625rem);
+  --fluid-md:      clamp(1.0625rem, 0.975rem + 0.46vw, 1.25rem);
+  --fluid-lg:      clamp(1.125rem, 0.975rem + 0.78vw, 1.5rem);
+  --fluid-xl:      clamp(1.375rem, 1.125rem + 1.3vw, 2.0rem);
+  --fluid-2xl:     clamp(1.625rem, 1.25rem + 1.95vw, 2.625rem);
+  --fluid-3xl:     clamp(1.875rem, 1.25rem + 3.25vw, 3.375rem);
+  --fluid-4xl:     clamp(2.25rem,  1.25rem + 5.21vw, 4.5rem);
+  --fluid-5xl:     clamp(2.75rem,  1.0rem  + 9.17vw, 6.0rem);
+  --fluid-hero:    clamp(3.0rem,   0.5rem  + 13vw,   8.0rem);
+
+  /* Line Heights */
+  --leading-none:    1;
+  --leading-tight:   1.1;    /* Display, hero — tight & punchy */
+  --leading-snug:    1.25;   /* H1–H3 */
+  --leading-normal:  1.5;    /* H4–H6, large body */
+  --leading-relaxed: 1.625;  /* Body text — optimal readability */
+  --leading-loose:   1.8;    /* Captions, long-form content */
+
+  /* Letter Spacing */
+  --tracking-tightest: -0.05em;  /* Mega display */
+  --tracking-tighter:  -0.03em;  /* H1–H2 */
+  --tracking-tight:    -0.02em;  /* H3–H4 */
+  --tracking-normal:    0em;     /* H5, body */
+  --tracking-wide:      0.025em; /* Labels, UI */
+  --tracking-wider:     0.05em;  /* Captions, mono */
+  --tracking-widest:    0.1em;   /* All-caps tags */
+
+  /* Font Weights */
+  --weight-thin:       300;
+  --weight-regular:    400;
+  --weight-medium:     500;
+  --weight-semibold:   600;
+  --weight-bold:       700;
+  --weight-extrabold:  800;
+  --weight-black:      900;
+
+  /* Measure — optimal line length */
+  --measure-narrow:  52ch;   /* Code, captions */
+  --measure-base:    65ch;   /* Body — WCAG optimal */
+  --measure-wide:    80ch;   /* Wide layouts */
+  --measure-full:    100%;
+
+  /* Spacing rhythm (based on 8px grid) */
+  --space-1:  0.25rem;  /* 4px */
+  --space-2:  0.5rem;   /* 8px */
+  --space-3:  0.75rem;  /* 12px */
+  --space-4:  1rem;     /* 16px */
+  --space-5:  1.25rem;  /* 20px */
+  --space-6:  1.5rem;   /* 24px */
+  --space-8:  2rem;     /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+
+  /* Colors — HitaVirTech palette */
+  --ink:       #0a0a0f;
+  --navy:      #0f1535;
+  --surface:   #ffffff;
+  --surface-2: #f5f6fa;
+  --surface-3: #eef0f8;
+  --teal:      #00c4b4;
+  --teal-dark: #009688;
+  --coral:     #ff4f3b;
+  --gold:      #f59e0b;
+  --blue:      #3b82f6;
+  --purple:    #8b5cf6;
+  --green:     #10b981;
+  --muted:     #64748b;
+  --border:    #e2e8f0;
+  --text:      #0f172a;
+  --text-2:    #475569;
+  --text-3:    #94a3b8;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow:    0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.12);
+}
+
+/* ── 2. Reset & Base ── */
+*, *::before, *::after {
+  margin: 0; padding: 0;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--fluid-base);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-relaxed);
+  color: var(--text);
+  background: var(--surface);
+  overflow-x: hidden;
+}
+
+/* ── 3. Semantic Heading Scale ── */
+h1, .h1 {
+  font-family: var(--font-display);
+  font-size: var(--fluid-5xl);
+  font-weight: var(--weight-black);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tighter);
+  color: var(--text);
+}
+
+h2, .h2 {
+  font-family: var(--font-display);
+  font-size: var(--fluid-4xl);
+  font-weight: var(--weight-extrabold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--text);
+}
+
+h3, .h3 {
+  font-family: var(--font-display);
+  font-size: var(--fluid-3xl);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+  color: var(--text);
+}
+
+h4, .h4 {
+  font-family: var(--font-display);
+  font-size: var(--fluid-2xl);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-normal);
+  letter-spacing: var(--tracking-tight);
+  color: var(--text);
+}
+
+h5, .h5 {
+  font-family: var(--font-display);
+  font-size: var(--fluid-xl);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-normal);
+  letter-spacing: var(--tracking-normal);
+  color: var(--text);
+}
+
+h6, .h6 {
+  font-family: var(--font-display);
+  font-size: var(--fluid-lg);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-normal);
+  letter-spacing: var(--tracking-normal);
+  color: var(--text);
+}
+
+/* ── 4. Body & Prose ── */
+p, .body {
+  font-size: var(--fluid-base);
+  line-height: var(--leading-relaxed);
+  max-width: var(--measure-base);
+  color: var(--text-2);
+}
+
+.body-lg {
+  font-size: var(--fluid-md);
+  line-height: var(--leading-relaxed);
+  max-width: var(--measure-base);
+}
+
+.body-sm {
+  font-size: var(--fluid-sm);
+  line-height: var(--leading-relaxed);
+}
+
+/* ── 5. Display / Hero ── */
+.display {
+  font-family: var(--font-display);
+  font-size: var(--fluid-hero);
+  font-weight: var(--weight-black);
+  line-height: var(--leading-none);
+  letter-spacing: var(--tracking-tightest);
+}
+
+.display-lg {
+  font-family: var(--font-display);
+  font-size: var(--fluid-5xl);
+  font-weight: var(--weight-black);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tighter);
+}
+
+/* ── 6. UI Elements ── */
+.label {
+  font-family: var(--font-ui);
+  font-size: var(--fluid-sm);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-2);
+}
+
+.label-upper {
+  font-family: var(--font-ui);
+  font-size: var(--fluid-xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.caption {
+  font-size: var(--fluid-xs);
+  line-height: var(--leading-loose);
+  color: var(--text-3);
+}
+
+.overline {
+  font-size: var(--fluid-xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--teal-dark);
+}
+
+/* ── 7. Code / Mono ── */
+code, .mono {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wider);
+  background: var(--surface-3);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  color: var(--coral);
+}
+
+pre, .code-block {
+  font-family: var(--font-mono);
+  font-size: var(--fluid-sm);
+  line-height: 1.7;
+  letter-spacing: var(--tracking-wider);
+  background: var(--navy);
+  color: #e2e8f0;
+  padding: 1.5rem;
+  border-radius: 12px;
+  overflow-x: auto;
+  tab-size: 2;
+}
+
+/* ── 8. Data / Dashboard ── */
+.data-value {
+  font-family: var(--font-display);
+  font-size: var(--fluid-4xl);
+  font-weight: var(--weight-black);
+  letter-spacing: var(--tracking-tighter);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.data-label {
+  font-size: var(--fluid-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.data-unit {
+  font-size: var(--fluid-lg);
+  font-weight: var(--weight-medium);
+  color: var(--muted);
+}
+
+.table-header {
+  font-size: var(--fluid-xs);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.table-cell {
+  font-size: var(--fluid-sm);
+  font-weight: var(--weight-regular);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── 9. Navigation ── */
+.nav-link {
+  font-size: var(--fluid-sm);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-normal);
+}
+
+.nav-brand {
+  font-size: var(--fluid-lg);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-tight);
+}
+
+/* ── 10. Button Typography ── */
+.btn-text {
+  font-size: var(--fluid-sm);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-wide);
+}
+
+.btn-text-lg {
+  font-size: var(--fluid-base);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-wide);
+}
+
+/* ═══════════════════════════════════
+   PAGE SHOWCASE LAYOUT
+═══════════════════════════════════ */
+.page { max-width: 1280px; margin: 0 auto; padding: 0 clamp(1rem, 5vw, 4rem); }
+
+/* Sticky nav */
+.top-nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 100;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 clamp(1rem,5vw,4rem);
+  height: 60px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.top-nav-brand { font-size: 1rem; font-weight: 800; color: var(--ink); letter-spacing: -0.03em; }
+.top-nav-brand span { color: var(--teal); }
+.top-nav-tag { font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); font-family: var(--font-mono); background: var(--surface-2); padding: 3px 10px; border-radius: 20px; border: 1px solid var(--border); }
+
+main { padding-top: 60px; }
+
+/* Hero */
+.hero-section {
+  padding: clamp(4rem, 10vw, 8rem) 0 clamp(3rem, 8vw, 6rem);
+  background: linear-gradient(135deg, var(--navy) 0%, #1a2456 60%, #0f2040 100%);
+  position: relative; overflow: hidden;
+}
+.hero-section::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 900px 600px at 60% 40%, rgba(0,196,180,0.15) 0%, transparent 60%),
+              radial-gradient(ellipse 500px 400px at 10% 80%, rgba(59,130,246,0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero-inner { position: relative; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(0,196,180,0.12); border: 1px solid rgba(0,196,180,0.3);
+  color: var(--teal); padding: 5px 14px; border-radius: 20px;
+  font-size: clamp(0.6875rem, 0.65rem + 0.2vw, 0.8rem);
+  font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  font-family: var(--font-mono); margin-bottom: 1.5rem;
+}
+.hero-title {
+  font-family: var(--font-display);
+  font-size: var(--fluid-hero);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: #fff;
+  margin-bottom: 1.5rem;
+}
+.hero-title .accent { color: var(--teal); }
+.hero-subtitle {
+  font-size: clamp(1rem, 0.875rem + 0.65vw, 1.375rem);
+  line-height: 1.6;
+  color: rgba(255,255,255,0.65);
+  max-width: 60ch;
+  margin-bottom: 2.5rem;
+}
+.hero-meta {
+  font-family: var(--font-mono);
+  font-size: clamp(0.7rem, 0.65rem + 0.25vw, 0.875rem);
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.05em;
+  display: flex; gap: 2rem; flex-wrap: wrap;
+}
+.hero-meta span { display: flex; align-items: center; gap: 6px; }
+.hero-meta strong { color: var(--teal); }
+
+/* Sections */
+.section { padding: clamp(3rem,8vw,6rem) 0; }
+.section + .section { border-top: 1px solid var(--border); }
+.section-dark { background: var(--navy); }
+.section-muted { background: var(--surface-2); }
+
+.section-header { margin-bottom: clamp(2rem, 5vw, 4rem); }
+.section-kicker {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(0,196,180,0.08); border: 1px solid rgba(0,196,180,0.2);
+  color: var(--teal-dark); padding: 4px 12px; border-radius: 20px;
+  font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; font-family: var(--font-mono); margin-bottom: 1rem;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 1.25rem + 2.6vw, 3rem);
+  font-weight: 800; letter-spacing: -0.03em; line-height: 1.1;
+  color: var(--text);
+}
+.section-title .accent { color: var(--teal); }
+.section-desc { font-size: var(--fluid-md); color: var(--text-2); max-width: 55ch; line-height: 1.65; margin-top: 0.75rem; }
+
+/* Scale table */
+.scale-grid { display: grid; gap: 1.5px; background: var(--border); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); }
+.scale-row {
+  display: grid; grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 0; background: var(--surface);
+  padding: 1.25rem 1.5rem; align-items: center;
+  transition: background 0.15s;
+  position: relative;
+}
+.scale-row:hover { background: rgba(0,196,180,0.03); }
+.scale-row:first-child { border-radius: 16px 16px 0 0; }
+.scale-row:last-child  { border-radius: 0 0 16px 16px; }
+.scale-row.header {
+  background: var(--navy); color: #fff;
+  padding: 1rem 1.5rem;
+}
+.scale-row.header .scale-label, .scale-row.header .scale-rem,
+.scale-row.header .scale-px, .scale-row.header .scale-use {
+  font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: rgba(255,255,255,0.5);
+  font-family: var(--font-mono);
+}
+.scale-token { font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; color: var(--coral); }
+.scale-rem   { font-family: var(--font-mono); font-size: 0.75rem; color: var(--blue); }
+.scale-px    { font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); }
+.scale-use   { font-size: 0.6875rem; color: var(--text-3); font-style: italic; }
+.scale-preview {
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  grid-column: 1 / -1;
+  padding-top: 0.5rem;
+  opacity: 0.9;
+}
+.scale-row.base-row { background: rgba(0,196,180,0.05); border-left: 3px solid var(--teal); }
+
+/* Type specimen blocks */
+.specimen-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+.specimen-card {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 16px; padding: 2rem;
+  display: flex; flex-direction: column; gap: 0.75rem;
+  transition: all 0.25s;
+}
+.specimen-card:hover { border-color: var(--teal); box-shadow: 0 8px 32px rgba(0,196,180,0.1); transform: translateY(-2px); }
+.specimen-meta { display: flex; justify-content: space-between; align-items: center; }
+.specimen-tag { font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 600; color: var(--teal); background: rgba(0,196,180,0.1); padding: 2px 8px; border-radius: 4px; }
+.specimen-info { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--text-3); }
+.specimen-divider { height: 1px; background: var(--border); }
+.specimen-note { font-size: 0.6875rem; color: var(--text-3); line-height: 1.5; }
+
+/* Colour-coded heading previews */
+.h-preview-1 { font-size: var(--fluid-5xl); font-weight: 900; letter-spacing: -0.04em; line-height: 1; }
+.h-preview-2 { font-size: var(--fluid-4xl); font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+.h-preview-3 { font-size: var(--fluid-3xl); font-weight: 700; letter-spacing: -0.025em; line-height: 1.1; }
+.h-preview-4 { font-size: var(--fluid-2xl); font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; }
+.h-preview-5 { font-size: var(--fluid-xl); font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; }
+.h-preview-6 { font-size: var(--fluid-lg); font-weight: 600; letter-spacing: 0; line-height: 1.35; }
+
+/* Dashboard demo */
+.dashboard-demo {
+  background: var(--navy); border-radius: 20px; padding: 2rem;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem;
+}
+.metric-card {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px; padding: 1.25rem;
+}
+.metric-value { font-size: clamp(2rem, 3vw, 3rem); font-weight: 900; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; line-height: 1; color: #fff; }
+.metric-label { font-size: 0.625rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-top: 0.4rem; font-family: var(--font-mono); }
+.metric-change { font-size: 0.75rem; font-weight: 600; margin-top: 0.5rem; }
+.positive { color: var(--green); }
+.negative { color: var(--coral); }
+
+/* Code block showcase */
+.code-showcase {
+  background: #0d1117; border-radius: 16px; overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.3);
+}
+.code-header {
+  background: rgba(255,255,255,0.05); padding: 0.875rem 1.25rem;
+  display: flex; align-items: center; gap: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.code-dot { width: 10px; height: 10px; border-radius: 50%; }
+.code-dot.r { background: #ff5f57; }
+.code-dot.y { background: #febc2e; }
+.code-dot.g { background: #28c840; }
+.code-filename { font-family: var(--font-mono); font-size: 0.6875rem; color: rgba(255,255,255,0.4); margin-left: 8px; }
+.code-body { padding: 1.5rem; font-family: var(--font-mono); font-size: clamp(0.6875rem, 0.625rem + 0.32vw, 0.875rem); line-height: 1.75; overflow-x: auto; }
+.c-comment { color: #636e7b; }
+.c-prop { color: #79c0ff; }
+.c-val { color: #a5d6ff; }
+.c-fn { color: #d2a8ff; }
+.c-num { color: #79c0ff; }
+.c-str { color: #a8ff78; }
+.c-punct { color: #8b949e; }
+.c-kw { color: #ff7b72; }
+.code-line { display: block; }
+
+/* Pairing section */
+.pairing-card {
+  background: var(--surface); border: 1.5px solid var(--border); border-radius: 16px; padding: 2rem;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center;
+}
+.pairing-preview h3 { color: var(--text); margin-bottom: 0.5rem; }
+.pairing-preview p  { color: var(--text-2); font-size: 0.9375rem; line-height: 1.65; }
+.pairing-specs { display: flex; flex-direction: column; gap: 0.75rem; }
+.spec-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
+.spec-row:last-child { border: none; }
+.spec-key { font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-family: var(--font-mono); }
+.spec-val { font-size: 0.75rem; font-weight: 600; color: var(--text); font-family: var(--font-mono); }
+
+/* Performance tips */
+.tip-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; }
+.tip-card {
+  background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 1.5rem;
+  position: relative; overflow: hidden;
+}
+.tip-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.tip-card.perf::before { background: linear-gradient(90deg,var(--teal),var(--blue)); }
+.tip-card.a11y::before { background: linear-gradient(90deg,var(--green),var(--teal)); }
+.tip-card.cls::before  { background: linear-gradient(90deg,var(--gold),var(--coral)); }
+.tip-card.fluid::before{ background: linear-gradient(90deg,var(--purple),var(--blue)); }
+.tip-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+.tip-title { font-size: 0.9375rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+.tip-desc  { font-size: 0.8125rem; color: var(--text-2); line-height: 1.6; }
+.tip-code  { font-family: var(--font-mono); font-size: 0.6875rem; background: var(--surface-3); color: var(--coral); padding: 0.6rem 0.875rem; border-radius: 8px; margin-top: 0.875rem; line-height: 1.6; }
+
+/* Live demo */
+.demo-panel {
+  background: var(--surface-2); border: 1.5px solid var(--border); border-radius: 16px; overflow: hidden;
+}
+.demo-toolbar {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 0.75rem 1.25rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+}
+.demo-btn {
+  font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.05em;
+  padding: 4px 12px; border-radius: 6px; border: 1.5px solid var(--border);
+  background: var(--surface); color: var(--text-2); cursor: pointer;
+  transition: all 0.15s; font-family: var(--font-ui);
+}
+.demo-btn.active, .demo-btn:hover { background: var(--teal); color: #fff; border-color: var(--teal); }
+.demo-body { padding: 2rem; }
+.demo-text-area { max-width: 65ch; }
+
+/* Prose reading width demo */
+.measure-demo { position: relative; }
+.measure-ruler {
+  position: absolute; top: 0; right: 0;
+  font-family: var(--font-mono); font-size: 0.6rem;
+  color: var(--teal); padding: 2px 6px; background: rgba(0,196,180,0.1);
+  border-radius: 4px; border: 1px solid rgba(0,196,180,0.25);
+}
+
+/* Accessibility badges */
+.a11y-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 0.625rem; font-weight: 700; padding: 2px 8px;
+  border-radius: 4px; letter-spacing: 0.05em; font-family: var(--font-mono);
+}
+.a11y-aa  { background: rgba(16,185,129,0.1);  color: var(--green); border: 1px solid rgba(16,185,129,0.25); }
+.a11y-aaa { background: rgba(0,196,180,0.1);   color: var(--teal);  border: 1px solid rgba(0,196,180,0.25); }
+
+/* Utility */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-2 { gap: 0.5rem; }
+.gap-3 { gap: 0.75rem; }
+.gap-4 { gap: 1rem; }
+.gap-6 { gap: 1.5rem; }
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 0.75rem; }
+.mt-4 { margin-top: 1rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-4 { margin-bottom: 1rem; }
+.text-teal   { color: var(--teal); }
+.text-coral  { color: var(--coral); }
+.text-blue   { color: var(--blue); }
+.text-purple { color: var(--purple); }
+.text-gold   { color: var(--gold); }
+.text-green  { color: var(--green); }
+.text-muted  { color: var(--muted); }
+.text-white  { color: #fff; }
+.fw-black    { font-weight: 900; }
+.fw-bold     { font-weight: 700; }
+.font-mono   { font-family: var(--font-mono); }
+.truncate    { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+@media (max-width: 768px) {
+  .pairing-card { grid-template-columns: 1fr; }
+  .scale-row { grid-template-columns: 1fr 1fr; }
+  .scale-row.header .scale-use { display: none; }
+  .scale-use { display: none; }
+}
+
+/* Scroll reveal */
+.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.55s ease, transform 0.55s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav class="top-nav">
+  <div class="top-nav-brand">Hita<span>Vir</span>Tech <span style="color:var(--text-3);font-weight:400;font-size:0.875rem">/ Typography System</span></div>
+  <div class="top-nav-tag">v1.0 · Base 16px · Scale 1.25</div>
+</nav>
+
+<main>
+
+<!-- ══════════════════════
+  HERO
+══════════════════════ -->
+<section class="hero-section">
+  <div class="page hero-inner">
+    <div class="hero-badge">⚡ Typography System — World Class</div>
+    <h1 class="hero-title">
+      Type that<br><span class="accent">Scales</span> with<br>Purpose
+    </h1>
+    <p class="hero-subtitle">
+      A production-ready, WCAG-compliant typography system built on Inter + clamp() fluid sizing. Designed for SaaS dashboards, data platforms, and landing pages — following Apple, Stripe, Google &amp; Notion patterns.
+    </p>
+    <div class="hero-meta">
+      <span><strong>Base</strong> 16px</span>
+      <span><strong>Scale</strong> 1.25 Major Third</span>
+      <span><strong>Font</strong> Inter / System UI</span>
+      <span><strong>Mono</strong> JetBrains Mono</span>
+      <span><strong>Method</strong> clamp() + rem</span>
+      <span><strong>WCAG</strong> AA / AAA</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════
+  §1 · FONT SCALE TABLE
+══════════════════════ -->
+<section class="section page reveal">
+  <div class="section-header">
+    <div class="section-kicker">§ 1 · Complete Type Scale</div>
+    <h2 class="section-title">Font Scale — <span class="accent">16px × 1.25</span></h2>
+    <p class="section-desc">Every step multiplies by 1.25 (Major Third interval). Values provided in both static rem and fluid clamp() for full responsiveness.</p>
+  </div>
+
+  <div class="scale-grid">
+    <div class="scale-row header">
+      <div class="scale-label">Token</div>
+      <div class="scale-rem">rem (static)</div>
+      <div class="scale-px">px equiv</div>
+      <div class="scale-use">Primary Use</div>
+    </div>
+
+    <!-- xs -->
+    <div class="scale-row">
+      <div class="flex flex-col gap-2">
+        <span class="scale-token">--text-xs</span>
+        <span class="scale-preview" style="font-size:0.64rem">Aa — Caption, legal, micro-label</span>
+      </div>
+      <div class="scale-rem">0.64 rem<br><span style="color:var(--text-3);font-size:0.6rem">clamp(0.60rem, 0.55rem + 0.25vw, 0.75rem)</span></div>
+      <div class="scale-px">10.24 px</div>
+      <div class="scale-use">Captions · Legal · Footnotes</div>
+    </div>
+
+    <!-- sm -->
+    <div class="scale-row">
+      <div class="flex flex-col gap-2">
+        <span class="scale-token">--text-sm</span>
+        <span class="scale-preview" style="font-size:0.80rem">Aa — Labels, metadata, tags</span>
+      </div>
+      <div class="scale-rem">0.80 rem<br><span style="color:var(--text-3);font-size:0.6rem">clamp(0.75rem, 0.70rem + 0.27vw, 0.875rem)</span></div>
+      <div class="scale-px">12.80 px</div>
+      <div class="scale-use">Labels · Tags · Table headers</div>
+    </div>
+
+    <!-- base ← BASE -->
+    <div class="scale-row base-row">
+      <div class="flex flex-col gap-2">
+        <span class="scale-token">--text-base ← BASE</span>
+        <span class="scale-preview" style="font-size:1.00rem">Aa — Body text, default reading size</span>
+      </div>
+      <div class="scale-rem">1.00 rem<br><span style="color:var(--text-3);font-size:0.6rem">clamp(0.9375rem, 0.875rem + 0.33vw, 1.0625rem)</span></div>
+      <div class="scale-px">16.00 px</div>
+      <div class="scale-use">Body · Paragraphs · Default</div>
+    </div>
+
+    <!-- md -->
+    <div class="scale-row">
+      <div class="flex flex-col gap-2">
+        <span class="scale-token">--text-md</span>
+        <span class="scale-preview" style="font-size:1.125rem">Aa — Lead text, intro paragraphs</span>
+      </div>
+      <div class="scale-rem">1.125 rem<br><span style="color:var(--text-3);font-size:0.6rem">clamp(1.0625rem, 0.975rem + 0.46vw, 1.25rem)</span></div>
+      <div class="scale-px">18.00 px</div>
+      <div class="scale-use">Lead · Intro text · H6 sub</div>
+    </div>
+
+    <!-- lg -->
+    <div class="scale-row">
+      <div class="flex flex-col gap-2">
+        <span class="scale-token">--text-lg</span>
+        <span class="scale-preview" style="font-size:1.25rem">Aa — H6, large body</span>
+      </div>
+      <div class="scale-rem">1.25 rem<br><span style="color:var(--text-3);font-size:0.6rem">clamp(1.125rem, 0.975rem + 0.78vw, 1.5rem)</span></div>
+      <div class="scale-px">20.00 px</div>
+      <div class="scale-use">H6 · Large body · Cards</div>
+    </div>
+
+    <!-- xl -->
+    <div class="scale-row">
+      <div class="flex flex-col gap-2">
+        <span class="scale-token">--text-xl</span>
+        <span class="scale-preview" style="font-size:1.5625rem">Aa — H5 heading</span>
+      </div>
+      <div class="scale-rem">1.5625 rem<br><span style="color:var(--text-3);font-size:0.6rem">clamp(1.375rem, 1.125rem + 1.3vw, 2.0rem)</span></div>
+      <div class="scale-px">25.00 px</div>
+      <div class="scale-use">H5 · Section sub-title</div>
+    </div>
+
+    <!-- 2xl -->
+    <div class="scale-row">
+      <div class="flex flex-col gap-2">
+        <span class="scale-token">--text-2xl</span>
+        <span class="scale-preview" style="font-size:1.953rem;letter-spacing:-0.01em">Aa — H4 heading</span>
+      </div>
+      <div class="scale-rem">1.953 rem<br><span style="color:var(--text-3);font-size:0.6rem">clamp(1.625rem, 1.25rem + 1.95vw, 2.625rem)</span></div>
+      <div class="scale-px">31.25 px</div>
+      <div class="scale-use">H4 · Card titles · Modal heads</div>
+    </div>
+
+    <!-- 3xl -->
+    <div class="scale-row">
+      <div class="flex flex-col gap-2">
+        <span class="scale-token">--text-3xl</span>
+        <span class="scale-preview" style="font-size:2.2rem;letter-spacing:-0.02em;font-weight:800">Aa — H3 heading</span>
+      </div>
+      <div class="scale-rem">2.441 rem<br><span style="color:var(--text-3);font-size:0.6rem">clamp(1.875rem, 1.25rem + 3.25vw, 3.375rem)</span></div>
+      <div class="scale-px">39.06 px</div>
+      <div class="scale-use">H3 · Feature heads · Sections</div>
+    </div>
+
+    <!-- 4xl -->
+    <div class="scale-row">
+      <div class="flex flex-col gap-2">
+        <span class="scale-token">--text-4xl</span>
+        <span class="scale-preview" style="font-size:2.6rem;letter-spacing:-0.03em;font-weight:800">Aa — H2 heading</span>
+      </div>
+      <div class="scale-rem">3.052 rem<br><span style="color:var(--text-3);font-size:0.6rem">clamp(2.25rem, 1.25rem + 5.21vw, 4.5rem)</span></div>
+      <div class="scale-px">48.83 px</div>
+      <div class="scale-use">H2 · Page titles · Hero sub</div>
+    </div>
+
+    <!-- 5xl -->
+    <div class="scale-row">
+      <div class="flex flex-col gap-2">
+        <span class="scale-token">--text-5xl</span>
+        <span class="scale-preview" style="font-size:3rem;letter-spacing:-0.04em;font-weight:900">Aa — H1 heading</span>
+      </div>
+      <div class="scale-rem">3.815 rem<br><span style="color:var(--text-3);font-size:0.6rem">clamp(2.75rem, 1.0rem + 9.17vw, 6.0rem)</span></div>
+      <div class="scale-px">61.04 px</div>
+      <div class="scale-use">H1 · Primary page heading</div>
+    </div>
+
+    <!-- hero -->
+    <div class="scale-row" style="background:rgba(0,196,180,0.03);">
+      <div class="flex flex-col gap-2">
+        <span class="scale-token" style="color:var(--teal)">--text-hero</span>
+        <span class="scale-preview" style="font-size:3.5rem;letter-spacing:-0.05em;font-weight:900;color:var(--teal)">Aa — Hero Display</span>
+      </div>
+      <div class="scale-rem" style="color:var(--teal)">4.768+ rem<br><span style="color:var(--text-3);font-size:0.6rem">clamp(3.0rem, 0.5rem + 13vw, 8.0rem)</span></div>
+      <div class="scale-px">76–128 px</div>
+      <div class="scale-use">Hero · Display · Mega title</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════
+  §2 · HEADING SPECIMENS
+══════════════════════ -->
+<section class="section section-muted page reveal">
+  <div class="section-header">
+    <div class="section-kicker">§ 2 · Heading Hierarchy</div>
+    <h2 class="section-title">H1–H6 <span class="accent">Live Specimens</span></h2>
+    <p class="section-desc">Each heading is fluid — scales gracefully from 375px mobile to 1440px desktop. Line height, weight, and tracking tuned per level.</p>
+  </div>
+
+  <div class="specimen-grid">
+
+    <div class="specimen-card" style="border-color:rgba(255,79,59,0.3)">
+      <div class="specimen-meta">
+        <span class="specimen-tag" style="color:var(--coral);background:rgba(255,79,59,0.1)">H1</span>
+        <div class="flex gap-2">
+          <span class="a11y-badge a11y-aaa">AAA</span>
+          <span class="specimen-info">900 · -0.04em · lh 1.0</span>
+        </div>
+      </div>
+      <div class="specimen-divider"></div>
+      <div class="h-preview-1 text-coral truncate">Data Engineer</div>
+      <div class="specimen-note">clamp(2.75rem, 1rem + 9.17vw, 6rem) — Primary page heading. One per page. Used above fold.</div>
+      <div class="font-mono" style="font-size:0.6rem;color:var(--text-3)">max-width: 100% · letter-spacing: -0.04em</div>
+    </div>
+
+    <div class="specimen-card" style="border-color:rgba(59,130,246,0.3)">
+      <div class="specimen-meta">
+        <span class="specimen-tag" style="color:var(--blue);background:rgba(59,130,246,0.1)">H2</span>
+        <div class="flex gap-2">
+          <span class="a11y-badge a11y-aaa">AAA</span>
+          <span class="specimen-info">800 · -0.03em · lh 1.0</span>
+        </div>
+      </div>
+      <div class="specimen-divider"></div>
+      <div class="h-preview-2 text-blue truncate">Medallion Arch</div>
+      <div class="specimen-note">clamp(2.25rem, 1.25rem + 5.21vw, 4.5rem) — Section titles. Multiple allowed. Bold hierarchy marker.</div>
+      <div class="font-mono" style="font-size:0.6rem;color:var(--text-3)">max-width: 100% · letter-spacing: -0.03em</div>
+    </div>
+
+    <div class="specimen-card" style="border-color:rgba(139,92,246,0.3)">
+      <div class="specimen-meta">
+        <span class="specimen-tag" style="color:var(--purple);background:rgba(139,92,246,0.1)">H3</span>
+        <div class="flex gap-2">
+          <span class="a11y-badge a11y-aaa">AAA</span>
+          <span class="specimen-info">700 · -0.025em · lh 1.1</span>
+        </div>
+      </div>
+      <div class="specimen-divider"></div>
+      <div class="h-preview-3 text-purple truncate">Delta Lake ETL</div>
+      <div class="specimen-note">clamp(1.875rem, 1.25rem + 3.25vw, 3.375rem) — Feature headings, card titles, sub-sections.</div>
+      <div class="font-mono" style="font-size:0.6rem;color:var(--text-3)">max-width: 100% · letter-spacing: -0.025em</div>
+    </div>
+
+    <div class="specimen-card" style="border-color:rgba(245,158,11,0.3)">
+      <div class="specimen-meta">
+        <span class="specimen-tag" style="color:var(--gold);background:rgba(245,158,11,0.1)">H4</span>
+        <div class="flex gap-2">
+          <span class="a11y-badge a11y-aa">AA</span>
+          <span class="specimen-info">700 · -0.02em · lh 1.2</span>
+        </div>
+      </div>
+      <div class="specimen-divider"></div>
+      <div class="h-preview-4 text-gold">PySpark Foundations</div>
+      <div class="specimen-note">clamp(1.625rem, 1.25rem + 1.95vw, 2.625rem) — Panel titles, dialog headings, sidebar items.</div>
+      <div class="font-mono" style="font-size:0.6rem;color:var(--text-3)">max-width: 100% · letter-spacing: -0.02em</div>
+    </div>
+
+    <div class="specimen-card" style="border-color:rgba(0,196,180,0.3)">
+      <div class="specimen-meta">
+        <span class="specimen-tag">H5</span>
+        <div class="flex gap-2">
+          <span class="a11y-badge a11y-aa">AA</span>
+          <span class="specimen-info">600 · -0.01em · lh 1.25</span>
+        </div>
+      </div>
+      <div class="specimen-divider"></div>
+      <div class="h-preview-5 text-teal">Unity Catalog — Governance Layer</div>
+      <div class="specimen-note">clamp(1.375rem, 1.125rem + 1.3vw, 2.0rem) — Widget titles, accordion heads, nav sections.</div>
+      <div class="font-mono" style="font-size:0.6rem;color:var(--text-3)">max-width: 55ch · letter-spacing: -0.01em</div>
+    </div>
+
+    <div class="specimen-card" style="border-color:rgba(16,185,129,0.3)">
+      <div class="specimen-meta">
+        <span class="specimen-tag" style="color:var(--green);background:rgba(16,185,129,0.1)">H6</span>
+        <div class="flex gap-2">
+          <span class="a11y-badge a11y-aa">AA</span>
+          <span class="specimen-info">600 · 0em · lh 1.35</span>
+        </div>
+      </div>
+      <div class="specimen-divider"></div>
+      <div class="h-preview-6 text-green">Week 4 — Databricks Essentials + Delta Lake</div>
+      <div class="specimen-note">clamp(1.125rem, 0.975rem + 0.78vw, 1.5rem) — Table heads, list titles, card sub-headers.</div>
+      <div class="font-mono" style="font-size:0.6rem;color:var(--text-3)">max-width: 60ch · letter-spacing: 0em</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════
+  §3 · BODY & PROSE
+══════════════════════ -->
+<section class="section page reveal">
+  <div class="section-header">
+    <div class="section-kicker">§ 3 · Body Text & Prose</div>
+    <h2 class="section-title">Optimal <span class="accent">Reading Experience</span></h2>
+    <p class="section-desc">Body text tuned for 60–75 characters per line (optimal per Baymard Institute research). Line height 1.625 for sustained reading.</p>
+  </div>
+
+  <div class="specimen-grid">
+    <div class="specimen-card">
+      <div class="specimen-meta">
+        <span class="specimen-tag">Lead / Intro</span>
+        <span class="specimen-info">1.125–1.25rem · lh 1.65</span>
+      </div>
+      <div class="specimen-divider"></div>
+      <p class="measure-demo" style="position:relative">
+        <span class="measure-ruler">~65ch</span>
+        <span style="font-size:clamp(1.0625rem,0.975rem + 0.46vw,1.25rem);line-height:1.65;color:var(--text-2);display:block;max-width:65ch">
+          HitaVirTech trains the next generation of Data Engineers — combining AWS, Azure, GCP, Databricks and cutting-edge LLM stacks into one transformative 15-week program built for real-world impact.
+        </span>
+      </p>
+      <div class="specimen-note">Used directly after headings. Slightly larger for visual breathing room before body text.</div>
+    </div>
+
+    <div class="specimen-card">
+      <div class="specimen-meta">
+        <span class="specimen-tag">Body Text</span>
+        <span class="specimen-info">1.00rem (16px) · lh 1.625</span>
+      </div>
+      <div class="specimen-divider"></div>
+      <p style="font-size:1rem;line-height:1.625;color:var(--text-2);max-width:65ch">
+        The Medallion Architecture (Bronze → Silver → Gold) is a data design pattern used in Databricks Lakehouse to organize data quality layers. Raw ingested data sits in Bronze, cleaned and enriched data in Silver, and business-ready aggregates in Gold. This pattern ensures ACID compliance via Delta Lake.
+      </p>
+      <div class="specimen-note">Core reading size. 16px × 1.625 line-height = 26px line spacing — optimal vertical rhythm.</div>
+    </div>
+
+    <div class="specimen-card">
+      <div class="specimen-meta">
+        <span class="specimen-tag">Small Body</span>
+        <span class="specimen-info">0.875rem · lh 1.625</span>
+      </div>
+      <div class="specimen-divider"></div>
+      <p style="font-size:0.875rem;line-height:1.625;color:var(--text-2);max-width:65ch">
+        PySpark transformations are lazy — they don't execute until you call an action like <code>.count()</code> or <code>.show()</code>. Understanding this distinction is critical for performance optimization. Use <code>.explain()</code> to inspect the physical plan before running expensive jobs on large datasets.
+      </p>
+      <div class="specimen-note">Secondary body — sidebars, cards, dense info panels. Never below 0.75rem for sustained reading.</div>
+    </div>
+
+    <div class="specimen-card">
+      <div class="specimen-meta">
+        <span class="specimen-tag">Caption</span>
+        <span class="specimen-info">0.64–0.75rem · lh 1.8 · tracking +0.05em</span>
+      </div>
+      <div class="specimen-divider"></div>
+      <p style="font-size:0.6875rem;line-height:1.8;color:var(--text-3);letter-spacing:0.01em;max-width:55ch">
+        Fig. 1 — Bronze → Silver → Gold Medallion Architecture. Data flows through each layer with increasing quality and business context. Unity Catalog governs lineage and access across all layers.
+      </p>
+      <div class="specimen-note">Image captions, tooltips, footnotes. Loose line-height compensates for small size — still WCAG AA.</div>
+    </div>
+
+    <div class="specimen-card">
+      <div class="specimen-meta">
+        <span class="specimen-tag">Overline / Kicker</span>
+        <span class="specimen-info">0.6875rem · 700 · ALL-CAPS · +0.1em</span>
+      </div>
+      <div class="specimen-divider"></div>
+      <div style="display:flex;flex-direction:column;gap:0.75rem">
+        <div>
+          <div style="font-size:0.6875rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal-dark);font-family:var(--font-mono);margin-bottom:0.25rem">⚡ Phase 1 · Weeks 1–5</div>
+          <div style="font-size:1.25rem;font-weight:700;color:var(--text)">Data Engineering Foundations</div>
+        </div>
+        <div>
+          <div style="font-size:0.6875rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--coral);font-family:var(--font-mono);margin-bottom:0.25rem">🎯 Capstone · Week 12</div>
+          <div style="font-size:1.25rem;font-weight:700;color:var(--text)">Full Supply Chain Platform</div>
+        </div>
+      </div>
+      <div class="specimen-note">Section kickers above headings. All-caps + monospace creates strong visual anchor without competing with headings.</div>
+    </div>
+
+    <div class="specimen-card">
+      <div class="specimen-meta">
+        <span class="specimen-tag">Label / UI</span>
+        <span class="specimen-info">0.75–0.875rem · 600 · +0.025em</span>
+      </div>
+      <div class="specimen-divider"></div>
+      <div style="display:flex;flex-direction:column;gap:0.75rem">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:0.75rem;font-weight:600;letter-spacing:0.025em;color:var(--text-2)">Start Date</span>
+          <span style="font-size:0.875rem;font-weight:700;color:var(--teal)">April 5, 2026</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:0.75rem;font-weight:600;letter-spacing:0.025em;color:var(--text-2)">Duration</span>
+          <span style="font-size:0.875rem;font-weight:700;color:var(--text)">15 Weeks</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:0.75rem;font-weight:600;letter-spacing:0.025em;color:var(--text-2)">Placement Rate</span>
+          <span style="font-size:0.875rem;font-weight:700;color:var(--green)">92%</span>
+        </div>
+      </div>
+      <div class="specimen-note">Form labels, key–value rows, settings panels. Semibold + slight tracking aids scanability at small sizes.</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════
+  §4 · DATA / DASHBOARD
+══════════════════════ -->
+<section class="section section-muted page reveal">
+  <div class="section-header">
+    <div class="section-kicker">§ 4 · Data & Dashboard Typography</div>
+    <h2 class="section-title">Numbers that <span class="accent">Communicate</span></h2>
+    <p class="section-desc">Data values use tabular-nums + tight letter-spacing + heavy weight. Labels use ALL-CAPS monospace for visual separation.</p>
+  </div>
+
+  <div class="dashboard-demo">
+    <div class="metric-card">
+      <div class="metric-value text-teal">50+</div>
+      <div class="metric-label">Alumni Placed</div>
+      <div class="metric-change positive">↑ +12 this batch</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value text-white">92%</div>
+      <div class="metric-label">Placement Rate</div>
+      <div class="metric-change positive">↑ +4% YoY</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value text-gold">15</div>
+      <div class="metric-label">Weeks Program</div>
+      <div class="metric-change" style="color:rgba(255,255,255,0.4)">+ 2 bonus weeks</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value text-blue">20+</div>
+      <div class="metric-label">Live Projects</div>
+      <div class="metric-change positive">↑ +5 new</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value" style="color:var(--purple)">3</div>
+      <div class="metric-label">Cloud Platforms</div>
+      <div class="metric-change" style="color:rgba(255,255,255,0.4)">AWS · Azure · GCP</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value text-green">6+</div>
+      <div class="metric-label">LLM Stacks</div>
+      <div class="metric-change positive">↑ Agentic AI</div>
+    </div>
+  </div>
+
+  <div style="margin-top:1.5rem;background:var(--surface);border-radius:16px;padding:1.5rem;border:1.5px solid var(--border)">
+    <div style="font-size:0.6875rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-family:var(--font-mono);margin-bottom:1rem">Weekly Batch Performance — SQL</div>
+    <table style="width:100%;border-collapse:collapse">
+      <thead>
+        <tr style="border-bottom:2px solid var(--border)">
+          <th style="font-size:0.625rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:0.5rem 0.75rem;font-family:var(--font-mono)">Student</th>
+          <th style="font-size:0.625rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-align:right;padding:0.5rem 0.75rem;font-family:var(--font-mono)">Score</th>
+          <th style="font-size:0.625rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-align:right;padding:0.5rem 0.75rem;font-family:var(--font-mono)">Projects</th>
+          <th style="font-size:0.625rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);text-align:left;padding:0.5rem 0.75rem;font-family:var(--font-mono)">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid var(--border)">
+          <td style="font-size:0.875rem;font-weight:500;padding:0.625rem 0.75rem;color:var(--text)">Rahul Verma</td>
+          <td style="font-size:0.875rem;font-weight:700;padding:0.625rem 0.75rem;color:var(--green);text-align:right;font-variant-numeric:tabular-nums">98.4</td>
+          <td style="font-size:0.875rem;font-weight:600;padding:0.625rem 0.75rem;color:var(--text-2);text-align:right;font-variant-numeric:tabular-nums">20/20</td>
+          <td style="padding:0.625rem 0.75rem"><span style="font-size:0.6875rem;font-weight:700;background:rgba(16,185,129,0.1);color:var(--green);padding:2px 8px;border-radius:4px;letter-spacing:0.05em">Placed</span></td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border)">
+          <td style="font-size:0.875rem;font-weight:500;padding:0.625rem 0.75rem;color:var(--text)">Priya Nair</td>
+          <td style="font-size:0.875rem;font-weight:700;padding:0.625rem 0.75rem;color:var(--teal);text-align:right;font-variant-numeric:tabular-nums">94.7</td>
+          <td style="font-size:0.875rem;font-weight:600;padding:0.625rem 0.75rem;color:var(--text-2);text-align:right;font-variant-numeric:tabular-nums">19/20</td>
+          <td style="padding:0.625rem 0.75rem"><span style="font-size:0.6875rem;font-weight:700;background:rgba(0,196,180,0.1);color:var(--teal);padding:2px 8px;border-radius:4px;letter-spacing:0.05em">Placed</span></td>
+        </tr>
+        <tr>
+          <td style="font-size:0.875rem;font-weight:500;padding:0.625rem 0.75rem;color:var(--text)">Arjun Mehta</td>
+          <td style="font-size:0.875rem;font-weight:700;padding:0.625rem 0.75rem;color:var(--gold);text-align:right;font-variant-numeric:tabular-nums">87.2</td>
+          <td style="font-size:0.875rem;font-weight:600;padding:0.625rem 0.75rem;color:var(--text-2);text-align:right;font-variant-numeric:tabular-nums">17/20</td>
+          <td style="padding:0.625rem 0.75rem"><span style="font-size:0.6875rem;font-weight:700;background:rgba(245,158,11,0.1);color:var(--gold);padding:2px 8px;border-radius:4px;letter-spacing:0.05em">Active</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ══════════════════════
+  §5 · MONO / CODE
+══════════════════════ -->
+<section class="section page reveal">
+  <div class="section-header">
+    <div class="section-kicker">§ 5 · Code & Monospace</div>
+    <h2 class="section-title">Code that's <span class="accent">Readable</span></h2>
+    <p class="section-desc">JetBrains Mono — 0.875em of parent, letter-spacing +0.05em, line-height 1.7. Ligatures enabled. Tab size 2 spaces.</p>
+  </div>
+  <div class="code-showcase">
+    <div class="code-header">
+      <div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div>
+      <span class="code-filename">hitavirtech_typography.css — Production CSS Variables</span>
+    </div>
+    <div class="code-body">
+<span class="code-line"><span class="c-comment">/* ══ HitaVirTech Typography System — Base 16px × Scale 1.25 ══ */</span></span>
+<span class="code-line"><span class="c-punct">:root {</span></span>
+<span class="code-line">  <span class="c-comment">/* Font Stacks */</span></span>
+<span class="code-line">  <span class="c-prop">--font-display</span><span class="c-punct">:</span> <span class="c-str">'Inter'</span><span class="c-punct">, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;</span></span>
+<span class="code-line">  <span class="c-prop">--font-mono</span><span class="c-punct">:</span>    <span class="c-str">'JetBrains Mono'</span><span class="c-punct">, 'Fira Code', ui-monospace, monospace;</span></span>
+<span class="code-line"></span>
+<span class="code-line">  <span class="c-comment">/* Fluid Scale — clamp(min, preferred, max) */</span></span>
+<span class="code-line">  <span class="c-prop">--fluid-xs</span><span class="c-punct">:</span>   <span class="c-fn">clamp</span><span class="c-punct">(</span><span class="c-num">0.60rem</span><span class="c-punct">,</span>  <span class="c-num">0.55rem</span> <span class="c-punct">+</span> <span class="c-num">0.25vw</span><span class="c-punct">,</span>  <span class="c-num">0.75rem</span><span class="c-punct">);</span>  <span class="c-comment">/* 10–12px */</span></span>
+<span class="code-line">  <span class="c-prop">--fluid-sm</span><span class="c-punct">:</span>   <span class="c-fn">clamp</span><span class="c-punct">(</span><span class="c-num">0.75rem</span><span class="c-punct">,</span>  <span class="c-num">0.70rem</span> <span class="c-punct">+</span> <span class="c-num">0.27vw</span><span class="c-punct">,</span>  <span class="c-num">0.875rem</span><span class="c-punct">);</span> <span class="c-comment">/* 12–14px */</span></span>
+<span class="code-line">  <span class="c-prop">--fluid-base</span><span class="c-punct">:</span> <span class="c-fn">clamp</span><span class="c-punct">(</span><span class="c-num">0.9375rem</span><span class="c-punct">,</span> <span class="c-num">0.875rem</span> <span class="c-punct">+</span> <span class="c-num">0.33vw</span><span class="c-punct">,</span> <span class="c-num">1.0625rem</span><span class="c-punct">);</span> <span class="c-comment">/* 15–17px */</span></span>
+<span class="code-line">  <span class="c-prop">--fluid-hero</span><span class="c-punct">:</span> <span class="c-fn">clamp</span><span class="c-punct">(</span><span class="c-num">3.0rem</span><span class="c-punct">,</span>    <span class="c-num">0.5rem</span>  <span class="c-punct">+</span> <span class="c-num">13vw</span><span class="c-punct">,</span>   <span class="c-num">8.0rem</span><span class="c-punct">);</span>   <span class="c-comment">/* 48–128px */</span></span>
+<span class="code-line"></span>
+<span class="code-line">  <span class="c-comment">/* Line Heights */</span></span>
+<span class="code-line">  <span class="c-prop">--leading-tight</span><span class="c-punct">:</span>   <span class="c-num">1.1</span><span class="c-punct">;</span>    <span class="c-comment">/* Display, H1–H2 */</span></span>
+<span class="code-line">  <span class="c-prop">--leading-relaxed</span><span class="c-punct">:</span> <span class="c-num">1.625</span><span class="c-punct">;</span> <span class="c-comment">/* Body — optimal readability */</span></span>
+<span class="code-line">  <span class="c-prop">--leading-loose</span><span class="c-punct">:</span>   <span class="c-num">1.8</span><span class="c-punct">;</span>    <span class="c-comment">/* Captions, footnotes */</span></span>
+<span class="code-line"></span>
+<span class="code-line">  <span class="c-comment">/* Tracking */</span></span>
+<span class="code-line">  <span class="c-prop">--tracking-tightest</span><span class="c-punct">:</span> <span class="c-num">-0.05em</span><span class="c-punct">;</span>  <span class="c-comment">/* Mega display */</span></span>
+<span class="code-line">  <span class="c-prop">--tracking-widest</span><span class="c-punct">:</span>   <span class="c-num">0.10em</span><span class="c-punct">;</span>   <span class="c-comment">/* ALL-CAPS labels */</span></span>
+<span class="code-line">  <span class="c-prop">--measure-base</span><span class="c-punct">:</span>      <span class="c-num">65ch</span><span class="c-punct">;</span>      <span class="c-comment">/* WCAG optimal line length */</span></span>
+<span class="code-line"><span class="c-punct">}</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="c-comment">/* Heading — semantic + fluid */</span></span>
+<span class="code-line"><span class="c-kw">h1</span> <span class="c-punct">{</span></span>
+<span class="code-line">  <span class="c-prop">font-family</span><span class="c-punct">:</span>    <span class="c-fn">var</span><span class="c-punct">(</span><span class="c-prop">--font-display</span><span class="c-punct">);</span></span>
+<span class="code-line">  <span class="c-prop">font-size</span><span class="c-punct">:</span>     <span class="c-fn">var</span><span class="c-punct">(</span><span class="c-prop">--fluid-5xl</span><span class="c-punct">);</span>  <span class="c-comment">/* clamp(2.75rem, 1rem + 9.17vw, 6rem) */</span></span>
+<span class="code-line">  <span class="c-prop">font-weight</span><span class="c-punct">:</span>   <span class="c-num">900</span><span class="c-punct">;</span></span>
+<span class="code-line">  <span class="c-prop">line-height</span><span class="c-punct">:</span>   <span class="c-fn">var</span><span class="c-punct">(</span><span class="c-prop">--leading-tight</span><span class="c-punct">);</span></span>
+<span class="code-line">  <span class="c-prop">letter-spacing</span><span class="c-punct">:</span> <span class="c-fn">var</span><span class="c-punct">(</span><span class="c-prop">--tracking-tighter</span><span class="c-punct">); </span><span class="c-comment">/* -0.03em */</span></span>
+<span class="code-line"><span class="c-punct">}</span></span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════
+  §6 · FONT PAIRING
+══════════════════════ -->
+<section class="section section-muted page reveal">
+  <div class="section-header">
+    <div class="section-kicker">§ 6 · Font Pairing Strategy</div>
+    <h2 class="section-title">Pairing <span class="accent">Recommendations</span></h2>
+    <p class="section-desc">Three tiers for different HitaVirTech contexts — from high-impact landing pages to dense data dashboards.</p>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:1.5rem">
+
+    <!-- Tier 1 -->
+    <div class="pairing-card">
+      <div class="pairing-preview">
+        <div style="font-size:0.6875rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal-dark);font-family:var(--font-mono);margin-bottom:0.5rem">🏆 Tier 1 — HitaVirTech Primary</div>
+        <h3 style="font-family:'Inter',system-ui,sans-serif;font-size:2rem;font-weight:900;letter-spacing:-0.04em;line-height:1;color:var(--text);margin-bottom:0.5rem">Inter + JetBrains Mono</h3>
+        <p style="font-family:'Inter',sans-serif;font-size:1rem;line-height:1.65;color:var(--text-2)">
+          Inter's optical sizing is tuned for screens at every size. At 72px+ it achieves the tight, editorial feel of <code>SF Pro Display</code>. At 14px it maintains superior legibility over system fonts. JetBrains Mono adds technical credibility for code and data.
+        </p>
+      </div>
+      <div class="pairing-specs">
+        <div class="spec-row"><span class="spec-key">Display</span><span class="spec-val">Inter 700–900</span></div>
+        <div class="spec-row"><span class="spec-key">Body</span><span class="spec-val">Inter 400–500</span></div>
+        <div class="spec-row"><span class="spec-key">Code</span><span class="spec-val">JetBrains Mono 400–600</span></div>
+        <div class="spec-row"><span class="spec-key">Loading</span><span class="spec-val">preload + font-display:swap</span></div>
+        <div class="spec-row"><span class="spec-key">Weights</span><span class="spec-val">300,400,500,600,700,800,900</span></div>
+        <div class="spec-row"><span class="spec-key">Best for</span><span class="spec-val">Landing · Dashboard · Docs</span></div>
+      </div>
+    </div>
+
+    <!-- Tier 2 -->
+    <div class="pairing-card">
+      <div class="pairing-preview">
+        <div style="font-size:0.6875rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);font-family:var(--font-mono);margin-bottom:0.5rem">⚡ Tier 2 — Zero-Load (System UI)</div>
+        <h3 style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:2rem;font-weight:800;letter-spacing:-0.03em;line-height:1;color:var(--text);margin-bottom:0.5rem">System UI Stack</h3>
+        <p style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;font-size:1rem;line-height:1.65;color:var(--text-2)">
+          No network request. No CLS risk. Renders at native OS quality. On Apple = SF Pro, Windows = Segoe UI, Android = Roboto. Perfect for dashboards and data apps where performance is paramount. Same metrics as Inter on most platforms.
+        </p>
+      </div>
+      <div class="pairing-specs">
+        <div class="spec-row"><span class="spec-key">Stack</span><span class="spec-val">-apple-system · system-ui</span></div>
+        <div class="spec-row"><span class="spec-key">CLS Impact</span><span class="spec-val">Zero — instant render</span></div>
+        <div class="spec-row"><span class="spec-key">Network</span><span class="spec-val">0 KB font requests</span></div>
+        <div class="spec-row"><span class="spec-key">Best for</span><span class="spec-val">Dashboards · Admin panels</span></div>
+        <div class="spec-row"><span class="spec-key">Mono</span><span class="spec-val">ui-monospace · Cascadia</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════
+  §7 · PERFORMANCE
+══════════════════════ -->
+<section class="section page reveal">
+  <div class="section-header">
+    <div class="section-kicker">§ 7 · Performance & Accessibility</div>
+    <h2 class="section-title">Built for <span class="accent">Core Web Vitals</span></h2>
+    <p class="section-desc">Every decision is measured against CLS, FCP, and LCP. WCAG AA minimum, AAA where possible.</p>
+  </div>
+
+  <div class="tip-grid">
+    <div class="tip-card perf">
+      <div class="tip-icon">⚡</div>
+      <div class="tip-title">Font Loading — Zero CLS</div>
+      <div class="tip-desc">Preconnect + preload + font-display:swap eliminates layout shift. Size-adjust property matches fallback metrics to loaded font precisely.</div>
+      <div class="tip-code">@font-face {<br>  font-display: swap;<br>  size-adjust: 100.6%;<br>  ascent-override: 90%;<br>}</div>
+    </div>
+    <div class="tip-card a11y">
+      <div class="tip-icon">♿</div>
+      <div class="tip-title">WCAG AA / AAA Compliance</div>
+      <div class="tip-desc">Body text (#0f172a on #fff) = 17.7:1 contrast. Muted text (#475569 on #fff) = 5.9:1 — meets AA. Min body size 15px — no tiny text.</div>
+      <div class="tip-code">/* Minimum ratios */<br>/* Body: 4.5:1 (AA) ✓ */<br>/* Large text: 3:1 (AA) ✓ */<br>/* Our body: 17.7:1 ✓✓✓ */</div>
+    </div>
+    <div class="tip-card cls">
+      <div class="tip-icon">📐</div>
+      <div class="tip-title">Optimal Line Length</div>
+      <div class="tip-desc">max-width: 65ch on all prose. Research shows 60–75 characters per line reduces fatigue and improves comprehension by 30%.</div>
+      <div class="tip-code">p, .prose {<br>  max-width: 65ch;<br>  /* Never &lt; 45ch */<br>  /* Never &gt; 85ch */<br>}</div>
+    </div>
+    <div class="tip-card fluid">
+      <div class="tip-icon">🌊</div>
+      <div class="tip-title">Fluid Typography — No Breakpoints</div>
+      <div class="tip-desc">clamp() interpolates smoothly between viewport sizes. No sudden jumps. Text scales continuously from 375px to 1440px without a single @media query.</div>
+      <div class="tip-code">font-size: clamp(<br>  1rem,   /* min: mobile */<br>  0.875rem + 0.5vw, /* fluid */<br>  1.25rem  /* max: desktop */<br>);</div>
+    </div>
+    <div class="tip-card perf" style="--c:var(--teal)">
+      <div class="tip-icon">🔢</div>
+      <div class="tip-title">Tabular Numbers for Data</div>
+      <div class="tip-desc">font-variant-numeric: tabular-nums prevents column width jitter in tables and dashboards. Numbers align perfectly across rows.</div>
+      <div class="tip-code">.metric, td, .count {<br>  font-variant-numeric:<br>    tabular-nums;<br>  letter-spacing: -0.02em;<br>}</div>
+    </div>
+    <div class="tip-card a11y">
+      <div class="tip-icon">🔤</div>
+      <div class="tip-title">Reduce Motion Support</div>
+      <div class="tip-desc">Font animations and transitions wrapped in prefers-reduced-motion. Users with vestibular disorders get static rendering automatically.</div>
+      <div class="tip-code">@media (prefers-reduced-motion:<br>  reduce) {<br>  * { animation-duration:<br>    0.01ms !important; }<br>}</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════
+  §8 · WEIGHT SPECIMENS
+══════════════════════ -->
+<section class="section section-muted page reveal">
+  <div class="section-header">
+    <div class="section-kicker">§ 8 · Font Weight Hierarchy</div>
+    <h2 class="section-title">Weight as <span class="accent">Signal</span></h2>
+    <p class="section-desc">Weight communicates importance. Use it intentionally — not decoratively. Only 4 weights needed for a complete system.</p>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:0">
+    <div style="display:grid;grid-template-columns:80px 1fr auto;gap:1rem;align-items:center;padding:1.25rem 1.5rem;background:var(--surface);border-radius:16px 16px 0 0;border:1.5px solid var(--border)">
+      <span class="font-mono" style="font-size:0.75rem;color:var(--text-3)">300</span>
+      <span style="font-size:2rem;font-weight:300;color:var(--text);letter-spacing:-0.02em;line-height:1">Data Engineering &amp; Analytics — Light</span>
+      <span style="font-size:0.6875rem;color:var(--text-3)">Decorative · large display only</span>
+    </div>
+    <div style="display:grid;grid-template-columns:80px 1fr auto;gap:1rem;align-items:center;padding:1.25rem 1.5rem;background:var(--surface);border-top:1px solid var(--border)">
+      <span class="font-mono" style="font-size:0.75rem;color:var(--text-3)">400</span>
+      <span style="font-size:2rem;font-weight:400;color:var(--text);letter-spacing:-0.02em;line-height:1">Data Engineering &amp; Analytics — Regular</span>
+      <span style="font-size:0.6875rem;color:var(--teal)">Body · Paragraphs</span>
+    </div>
+    <div style="display:grid;grid-template-columns:80px 1fr auto;gap:1rem;align-items:center;padding:1.25rem 1.5rem;background:var(--surface);border-top:1px solid var(--border)">
+      <span class="font-mono" style="font-size:0.75rem;color:var(--text-3)">500</span>
+      <span style="font-size:2rem;font-weight:500;color:var(--text);letter-spacing:-0.02em;line-height:1">Data Engineering &amp; Analytics — Medium</span>
+      <span style="font-size:0.6875rem;color:var(--text-3)">UI elements · Nav links</span>
+    </div>
+    <div style="display:grid;grid-template-columns:80px 1fr auto;gap:1rem;align-items:center;padding:1.25rem 1.5rem;background:var(--surface);border-top:1px solid var(--border)">
+      <span class="font-mono" style="font-size:0.75rem;color:var(--text-3)">600</span>
+      <span style="font-size:2rem;font-weight:600;color:var(--text);letter-spacing:-0.02em;line-height:1">Data Engineering &amp; Analytics — Semibold</span>
+      <span style="font-size:0.6875rem;color:var(--blue)">Labels · H5–H6</span>
+    </div>
+    <div style="display:grid;grid-template-columns:80px 1fr auto;gap:1rem;align-items:center;padding:1.25rem 1.5rem;background:var(--surface);border-top:1px solid var(--border)">
+      <span class="font-mono" style="font-size:0.75rem;color:var(--text-3)">700</span>
+      <span style="font-size:2rem;font-weight:700;color:var(--text);letter-spacing:-0.025em;line-height:1">Data Engineering &amp; Analytics — Bold</span>
+      <span style="font-size:0.6875rem;color:var(--purple)">H3–H4 · CTAs</span>
+    </div>
+    <div style="display:grid;grid-template-columns:80px 1fr auto;gap:1rem;align-items:center;padding:1.25rem 1.5rem;background:var(--surface);border-top:1px solid var(--border)">
+      <span class="font-mono" style="font-size:0.75rem;color:var(--text-3)">800</span>
+      <span style="font-size:2rem;font-weight:800;color:var(--text);letter-spacing:-0.03em;line-height:1">Data Engineering &amp; Analytics — ExtraBold</span>
+      <span style="font-size:0.6875rem;color:var(--coral)">H1–H2 headings</span>
+    </div>
+    <div style="display:grid;grid-template-columns:80px 1fr auto;gap:1rem;align-items:center;padding:1.25rem 1.5rem;background:rgba(0,196,180,0.04);border-top:1px solid var(--border);border-radius:0 0 16px 16px;border-left:3px solid var(--teal)">
+      <span class="font-mono" style="font-size:0.75rem;color:var(--teal)">900</span>
+      <span style="font-size:2rem;font-weight:900;color:var(--text);letter-spacing:-0.04em;line-height:1">Data Engineering &amp; Analytics — Black</span>
+      <span style="font-size:0.6875rem;color:var(--teal)">Hero · Display only</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════
+  §9 · LINE HEIGHT
+══════════════════════ -->
+<section class="section page reveal">
+  <div class="section-header">
+    <div class="section-kicker">§ 9 · Line Height & Vertical Rhythm</div>
+    <h2 class="section-title">Breathing <span class="accent">Room</span></h2>
+    <p class="section-desc">Line height creates vertical rhythm. The rule: tighter for large type (more visual weight), looser for small type (more air for legibility).</p>
+  </div>
+  <div class="specimen-grid">
+    <div class="specimen-card">
+      <div class="specimen-meta"><span class="specimen-tag">lh: 1.0</span><span class="specimen-info">Display / Mega hero</span></div>
+      <div class="specimen-divider"></div>
+      <div style="font-size:clamp(2rem,5vw,3.5rem);font-weight:900;letter-spacing:-0.04em;line-height:1;color:var(--text)">Master<br>the Stack</div>
+      <div class="specimen-note">≥ 5xl / Hero. Lines touch — creates mass and impact. Never use below 3xl.</div>
+    </div>
+    <div class="specimen-card">
+      <div class="specimen-meta"><span class="specimen-tag">lh: 1.1</span><span class="specimen-info">H1 / H2</span></div>
+      <div class="specimen-divider"></div>
+      <div style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;letter-spacing:-0.03em;line-height:1.1;color:var(--text)">Data Engineering<br>&amp; Agentic AI</div>
+      <div class="specimen-note">H1–H2 range. Slight gap between lines. Feels editorial and authoritative.</div>
+    </div>
+    <div class="specimen-card">
+      <div class="specimen-meta"><span class="specimen-tag">lh: 1.25</span><span class="specimen-info">H3 / H4</span></div>
+      <div class="specimen-divider"></div>
+      <div style="font-size:clamp(1.25rem,2.5vw,1.875rem);font-weight:700;letter-spacing:-0.02em;line-height:1.25;color:var(--text)">Delta Lake Architecture<br>Bronze → Silver → Gold<br>Medallion Pattern</div>
+      <div class="specimen-note">H3–H4 range. Three lines still readable. Good for feature cards.</div>
+    </div>
+    <div class="specimen-card">
+      <div class="specimen-meta"><span class="specimen-tag">lh: 1.5</span><span class="specimen-info">H5 / H6 / Large body</span></div>
+      <div class="specimen-divider"></div>
+      <div style="font-size:1.125rem;font-weight:600;line-height:1.5;color:var(--text)">PySpark transformations vs actions — understanding lazy evaluation and the Spark execution model for production ETL pipelines</div>
+      <div class="specimen-note">Sub-headings and large body. Comfortable multi-line reading.</div>
+    </div>
+    <div class="specimen-card">
+      <div class="specimen-meta"><span class="specimen-tag">lh: 1.625</span><span class="specimen-info">Body — optimal</span></div>
+      <div class="specimen-divider"></div>
+      <div style="font-size:1rem;font-weight:400;line-height:1.625;color:var(--text-2)">The Medallion Architecture ensures data quality progresses through Bronze, Silver, and Gold layers. Each layer adds value: raw ingestion, cleaned &amp; enriched, business-ready aggregates — all governed by Unity Catalog with full lineage tracking.</div>
+      <div class="specimen-note">16px × 1.625 = 26px line spacing. This is the Goldilocks zone for body text.</div>
+    </div>
+    <div class="specimen-card">
+      <div class="specimen-meta"><span class="specimen-tag">lh: 1.8</span><span class="specimen-info">Captions / Footnotes</span></div>
+      <div class="specimen-divider"></div>
+      <div style="font-size:0.6875rem;font-weight:400;line-height:1.8;color:var(--text-3);letter-spacing:0.01em">Fig. 2 — Data flows from raw sources through Azure ADLS Gen2 ingestion into Databricks. The Bronze layer stores raw data; Silver applies cleaning and schema enforcement; Gold delivers business-ready aggregates for Power BI consumption.</div>
+      <div class="specimen-note">Small text needs extra air. 1.8 line-height compensates for small cap-height and tight metrics.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════
+  §10 · GLOBAL TOKEN CSS
+══════════════════════ -->
+<section class="section" style="background:var(--navy);padding:clamp(3rem,8vw,6rem) 0" >
+  <div class="page reveal">
+    <div class="section-header">
+      <div class="section-kicker" style="background:rgba(0,196,180,0.15);border-color:rgba(0,196,180,0.3);color:var(--teal)">§ 10 · Production CSS — Copy &amp; Paste Ready</div>
+      <h2 class="section-title text-white">Complete <span class="text-teal">Token System</span></h2>
+      <p class="section-desc" style="color:rgba(255,255,255,0.55)">Drop this into any HitaVirTech project. All 40+ variables follow BEM naming convention. Fully tree-shakeable.</p>
+    </div>
+    <div class="code-showcase">
+      <div class="code-header">
+        <div class="code-dot r"></div><div class="code-dot y"></div><div class="code-dot g"></div>
+        <span class="code-filename">tokens/typography.css — Full production token system</span>
+      </div>
+      <div class="code-body" style="font-size:clamp(0.625rem,0.6rem + 0.25vw,0.8125rem)">
+<span class="code-line"><span class="c-comment">/**
+ * HitaVirTech Design System — Typography Tokens
+ * Base: 16px | Scale: 1.25 (Major Third) | Font: Inter
+ * Author: HitaVirTech Engineering | Version: 1.0.0
+ */</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="c-kw">@import url</span><span class="c-punct">(</span><span class="c-str">'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap'</span><span class="c-punct">);</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="c-punct">:root {</span></span>
+<span class="code-line">  <span class="c-comment">/* ── Font Families ─────────────────────────── */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-font-display</span><span class="c-punct">:</span> <span class="c-str">'Inter'</span><span class="c-punct">, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-font-body</span><span class="c-punct">:</span>    <span class="c-str">'Inter'</span><span class="c-punct">, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-font-mono</span><span class="c-punct">:</span>    <span class="c-str">'JetBrains Mono'</span><span class="c-punct">, 'Fira Code', ui-monospace, monospace;</span></span>
+<span class="code-line"></span>
+<span class="code-line">  <span class="c-comment">/* ── Static Scale (rem) ─────────────────────── */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-text-xs</span><span class="c-punct">:</span>   <span class="c-num">0.64rem</span><span class="c-punct">;</span>    <span class="c-comment">/* 10.24px */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-text-sm</span><span class="c-punct">:</span>   <span class="c-num">0.80rem</span><span class="c-punct">;</span>    <span class="c-comment">/* 12.80px */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-text-base</span><span class="c-punct">:</span> <span class="c-num">1.00rem</span><span class="c-punct">;</span>    <span class="c-comment">/* 16.00px ← BASE */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-text-md</span><span class="c-punct">:</span>   <span class="c-num">1.125rem</span><span class="c-punct">;</span>   <span class="c-comment">/* 18.00px */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-text-lg</span><span class="c-punct">:</span>   <span class="c-num">1.25rem</span><span class="c-punct">;</span>    <span class="c-comment">/* 20.00px */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-text-xl</span><span class="c-punct">:</span>   <span class="c-num">1.5625rem</span><span class="c-punct">;</span>  <span class="c-comment">/* 25.00px */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-text-2xl</span><span class="c-punct">:</span>  <span class="c-num">1.953rem</span><span class="c-punct">;</span>   <span class="c-comment">/* 31.25px */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-text-3xl</span><span class="c-punct">:</span>  <span class="c-num">2.441rem</span><span class="c-punct">;</span>   <span class="c-comment">/* 39.06px */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-text-4xl</span><span class="c-punct">:</span>  <span class="c-num">3.052rem</span><span class="c-punct">;</span>   <span class="c-comment">/* 48.83px */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-text-5xl</span><span class="c-punct">:</span>  <span class="c-num">3.815rem</span><span class="c-punct">;</span>   <span class="c-comment">/* 61.04px */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-text-hero</span><span class="c-punct">:</span> <span class="c-num">5.960rem</span><span class="c-punct">;</span>   <span class="c-comment">/* 95.37px */</span></span>
+<span class="code-line"></span>
+<span class="code-line">  <span class="c-comment">/* ── Fluid Scale clamp() ────────────────────── */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-fluid-xs</span><span class="c-punct">:</span>   <span class="c-fn">clamp</span><span class="c-punct">(</span><span class="c-num">0.60rem</span><span class="c-punct">,</span>   <span class="c-num">0.55rem</span> <span class="c-punct">+</span>  <span class="c-num">0.25vw</span><span class="c-punct">,</span>  <span class="c-num">0.75rem</span><span class="c-punct">);</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-fluid-sm</span><span class="c-punct">:</span>   <span class="c-fn">clamp</span><span class="c-punct">(</span><span class="c-num">0.75rem</span><span class="c-punct">,</span>   <span class="c-num">0.70rem</span> <span class="c-punct">+</span>  <span class="c-num">0.27vw</span><span class="c-punct">,</span>  <span class="c-num">0.875rem</span><span class="c-punct">);</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-fluid-base</span><span class="c-punct">:</span> <span class="c-fn">clamp</span><span class="c-punct">(</span><span class="c-num">0.9375rem</span><span class="c-punct">,</span> <span class="c-num">0.875rem</span> <span class="c-punct">+</span> <span class="c-num">0.33vw</span><span class="c-punct">,</span> <span class="c-num">1.0625rem</span><span class="c-punct">);</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-fluid-md</span><span class="c-punct">:</span>   <span class="c-fn">clamp</span><span class="c-punct">(</span><span class="c-num">1.0625rem</span><span class="c-punct">,</span> <span class="c-num">0.975rem</span> <span class="c-punct">+</span> <span class="c-num">0.46vw</span><span class="c-punct">,</span> <span class="c-num">1.25rem</span><span class="c-punct">);</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-fluid-lg</span><span class="c-punct">:</span>   <span class="c-fn">clamp</span><span class="c-punct">(</span><span class="c-num">1.125rem</span><span class="c-punct">,</span>  <span class="c-num">0.975rem</span> <span class="c-punct">+</span> <span class="c-num">0.78vw</span><span class="c-punct">,</span> <span class="c-num">1.5rem</span><span class="c-punct">);</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-fluid-xl</span><span class="c-punct">:</span>   <span class="c-fn">clamp</span><span class="c-punct">(</span><span class="c-num">1.375rem</span><span class="c-punct">,</span>  <span class="c-num">1.125rem</span> <span class="c-punct">+</span> <span class="c-num">1.30vw</span><span class="c-punct">,</span> <span class="c-num">2.0rem</span><span class="c-punct">);</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-fluid-2xl</span><span class="c-punct">:</span>  <span class="c-fn">clamp</span><span class="c-punct">(</span><span class="c-num">1.625rem</span><span class="c-punct">,</span>  <span class="c-num">1.250rem</span> <span class="c-punct">+</span> <span class="c-num">1.95vw</span><span class="c-punct">,</span> <span class="c-num">2.625rem</span><span class="c-punct">);</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-fluid-3xl</span><span class="c-punct">:</span>  <span class="c-fn">clamp</span><span class="c-punct">(</span><span class="c-num">1.875rem</span><span class="c-punct">,</span>  <span class="c-num">1.250rem</span> <span class="c-punct">+</span> <span class="c-num">3.25vw</span><span class="c-punct">,</span> <span class="c-num">3.375rem</span><span class="c-punct">);</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-fluid-4xl</span><span class="c-punct">:</span>  <span class="c-fn">clamp</span><span class="c-punct">(</span><span class="c-num">2.250rem</span><span class="c-punct">,</span>  <span class="c-num">1.250rem</span> <span class="c-punct">+</span> <span class="c-num">5.21vw</span><span class="c-punct">,</span> <span class="c-num">4.500rem</span><span class="c-punct">);</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-fluid-5xl</span><span class="c-punct">:</span>  <span class="c-fn">clamp</span><span class="c-punct">(</span><span class="c-num">2.750rem</span><span class="c-punct">,</span>  <span class="c-num">1.000rem</span> <span class="c-punct">+</span> <span class="c-num">9.17vw</span><span class="c-punct">,</span> <span class="c-num">6.000rem</span><span class="c-punct">);</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-fluid-hero</span><span class="c-punct">:</span> <span class="c-fn">clamp</span><span class="c-punct">(</span><span class="c-num">3.000rem</span><span class="c-punct">,</span>  <span class="c-num">0.500rem</span> <span class="c-punct">+</span> <span class="c-num">13.0vw</span><span class="c-punct">,</span> <span class="c-num">8.000rem</span><span class="c-punct">);</span></span>
+<span class="code-line"></span>
+<span class="code-line">  <span class="c-comment">/* ── Line Heights ───────────────────────────── */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-leading-none</span><span class="c-punct">:</span>    <span class="c-num">1</span><span class="c-punct">;</span>      <span class="c-comment">/* Mega display */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-leading-tight</span><span class="c-punct">:</span>   <span class="c-num">1.1</span><span class="c-punct">;</span>    <span class="c-comment">/* H1–H2 */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-leading-snug</span><span class="c-punct">:</span>    <span class="c-num">1.25</span><span class="c-punct">;</span>   <span class="c-comment">/* H3–H4 */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-leading-normal</span><span class="c-punct">:</span>  <span class="c-num">1.5</span><span class="c-punct">;</span>    <span class="c-comment">/* H5–H6 */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-leading-relaxed</span><span class="c-punct">:</span> <span class="c-num">1.625</span><span class="c-punct">;</span>  <span class="c-comment">/* Body — optimal ✓ */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-leading-loose</span><span class="c-punct">:</span>   <span class="c-num">1.8</span><span class="c-punct">;</span>    <span class="c-comment">/* Captions */</span></span>
+<span class="code-line"></span>
+<span class="code-line">  <span class="c-comment">/* ── Letter Spacing ─────────────────────────── */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-tracking-tightest</span><span class="c-punct">:</span> <span class="c-num">-0.05em</span><span class="c-punct">;</span>  <span class="c-comment">/* Mega display */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-tracking-tighter</span><span class="c-punct">:</span>  <span class="c-num">-0.03em</span><span class="c-punct">;</span>  <span class="c-comment">/* H1–H2 */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-tracking-tight</span><span class="c-punct">:</span>    <span class="c-num">-0.02em</span><span class="c-punct">;</span>  <span class="c-comment">/* H3–H4 */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-tracking-normal</span><span class="c-punct">:</span>    <span class="c-num">0em</span><span class="c-punct">;</span>      <span class="c-comment">/* Body */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-tracking-wide</span><span class="c-punct">:</span>      <span class="c-num">0.025em</span><span class="c-punct">;</span>  <span class="c-comment">/* Labels */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-tracking-widest</span><span class="c-punct">:</span>    <span class="c-num">0.10em</span><span class="c-punct">;</span>   <span class="c-comment">/* ALL-CAPS */</span></span>
+<span class="code-line"></span>
+<span class="code-line">  <span class="c-comment">/* ── Measure (line length) ──────────────────── */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-measure-narrow</span><span class="c-punct">:</span> <span class="c-num">52ch</span><span class="c-punct">;</span>  <span class="c-comment">/* Code, compact */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-measure-base</span><span class="c-punct">:</span>   <span class="c-num">65ch</span><span class="c-punct">;</span>  <span class="c-comment">/* Body — WCAG optimal */</span></span>
+<span class="code-line">  <span class="c-prop">--hvt-measure-wide</span><span class="c-punct">:</span>   <span class="c-num">80ch</span><span class="c-punct">;</span>  <span class="c-comment">/* Wide layout max */</span></span>
+<span class="code-line"><span class="c-punct">}</span></span>
+<span class="code-line"></span>
+<span class="code-line"><span class="c-comment">/* ── Utility classes (compose freely) ── */</span></span>
+<span class="code-line"><span class="c-kw">.hvt-display</span> <span class="c-punct">{</span> <span class="c-prop">font-size</span><span class="c-punct">:</span> <span class="c-fn">var</span><span class="c-punct">(</span><span class="c-prop">--hvt-fluid-hero</span><span class="c-punct">); font-weight: 900; line-height: 1; letter-spacing: -0.05em; }</span></span>
+<span class="code-line"><span class="c-kw">.hvt-h1</span>      <span class="c-punct">{</span> <span class="c-prop">font-size</span><span class="c-punct">:</span> <span class="c-fn">var</span><span class="c-punct">(</span><span class="c-prop">--hvt-fluid-5xl</span><span class="c-punct">); font-weight: 900; line-height: 1.1; letter-spacing: -0.04em; }</span></span>
+<span class="code-line"><span class="c-kw">.hvt-h2</span>      <span class="c-punct">{</span> <span class="c-prop">font-size</span><span class="c-punct">:</span> <span class="c-fn">var</span><span class="c-punct">(</span><span class="c-prop">--hvt-fluid-4xl</span><span class="c-punct">); font-weight: 800; line-height: 1.1; letter-spacing: -0.03em; }</span></span>
+<span class="code-line"><span class="c-kw">.hvt-h3</span>      <span class="c-punct">{</span> <span class="c-prop">font-size</span><span class="c-punct">:</span> <span class="c-fn">var</span><span class="c-punct">(</span><span class="c-prop">--hvt-fluid-3xl</span><span class="c-punct">); font-weight: 700; line-height: 1.1; letter-spacing: -0.025em; }</span></span>
+<span class="code-line"><span class="c-kw">.hvt-body</span>    <span class="c-punct">{</span> <span class="c-prop">font-size</span><span class="c-punct">:</span> <span class="c-fn">var</span><span class="c-punct">(</span><span class="c-prop">--hvt-fluid-base</span><span class="c-punct">); line-height: 1.625; max-width: 65ch; }</span></span>
+<span class="code-line"><span class="c-kw">.hvt-caption</span> <span class="c-punct">{</span> <span class="c-prop">font-size</span><span class="c-punct">:</span> <span class="c-fn">var</span><span class="c-punct">(</span><span class="c-prop">--hvt-fluid-xs</span><span class="c-punct">);  line-height: 1.8;   color: var(--hvt-text-muted); }</span></span>
+<span class="code-line"><span class="c-kw">.hvt-label</span>   <span class="c-punct">{</span> <span class="c-prop">font-size</span><span class="c-punct">:</span> <span class="c-fn">var</span><span class="c-punct">(</span><span class="c-prop">--hvt-fluid-xs</span><span class="c-punct">);  font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }</span></span>
+<span class="code-line"><span class="c-kw">.hvt-mono</span>    <span class="c-punct">{</span> <span class="c-prop">font-family</span><span class="c-punct">:</span> <span class="c-fn">var</span><span class="c-punct">(</span><span class="c-prop">--hvt-font-mono</span><span class="c-punct">); letter-spacing: 0.05em; }</span></span>
+<span class="code-line"><span class="c-kw">.hvt-tabular</span> <span class="c-punct">{</span> <span class="c-prop">font-variant-numeric</span><span class="c-punct">:</span> tabular-nums; <span class="c-prop">letter-spacing</span><span class="c-punct">:</span> -0.02em; <span class="c-punct">}</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer style="background:var(--ink);padding:3rem 0;border-top:1px solid rgba(255,255,255,0.05)">
+  <div class="page" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+    <div>
+      <div style="font-size:1rem;font-weight:800;color:#fff;letter-spacing:-0.03em;margin-bottom:0.25rem">Hita<span style="color:var(--teal)">Vir</span>Tech Typography System</div>
+      <div style="font-size:0.6875rem;color:rgba(255,255,255,0.35);font-family:var(--font-mono);letter-spacing:0.05em">v1.0 · Base 16px · Scale 1.25 · Inter + JetBrains Mono · WCAG AA</div>
+    </div>
+    <div style="display:flex;gap:1rem;flex-wrap:wrap">
+      <span style="font-size:0.6875rem;font-weight:700;padding:4px 10px;border-radius:4px;background:rgba(0,196,180,0.12);color:var(--teal);letter-spacing:0.05em;font-family:var(--font-mono)">WCAG AA ✓</span>
+      <span style="font-size:0.6875rem;font-weight:700;padding:4px 10px;border-radius:4px;background:rgba(59,130,246,0.12);color:var(--blue);letter-spacing:0.05em;font-family:var(--font-mono)">clamp() ✓</span>
+      <span style="font-size:0.6875rem;font-weight:700;padding:4px 10px;border-radius:4px;background:rgba(139,92,246,0.12);color:var(--purple);letter-spacing:0.05em;font-family:var(--font-mono)">CLS=0 ✓</span>
+      <span style="font-size:0.6875rem;font-weight:700;padding:4px 10px;border-radius:4px;background:rgba(245,158,11,0.12);color:var(--gold);letter-spacing:0.05em;font-family:var(--font-mono)">Mobile-First ✓</span>
+    </div>
+  </div>
+</footer>
+
+</main>
+
+<script>
+// Scroll reveal
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
